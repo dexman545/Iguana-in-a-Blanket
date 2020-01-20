@@ -2,10 +2,15 @@ package dex.iguanablanket;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.DefaultedList;
 
 import java.util.PrimitiveIterator;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 public class IguanaBlanket implements ModInitializer {
@@ -19,11 +24,20 @@ public class IguanaBlanket implements ModInitializer {
 				player.getBlockState().getBlock(); //gets block player is in
 
 				//Item weight calc
-				float sum = 0f;
+				AtomicReference<Float> sum = new AtomicReference<>(0f);
 				for (PrimitiveIterator.OfInt it = IntStream.range(0, player.inventory.getInvSize()).iterator(); it.hasNext(); ) {
 					int slot = it.next();
-					sum += ((ItemWeight) (Object) player.inventory.getInvStack(slot)).getWeight();
+					sum.updateAndGet(v -> (float) (v + ((ItemWeight) (Object) player.inventory.getInvStack(slot)).getWeight()));
+					if (Block.getBlockFromItem(player.inventory.getInvStack(slot).getItem()) instanceof ShulkerBoxBlock) {
+						//System.out.println(player.inventory.getInvStack(slot).getOrCreateTag());
+						DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
+						Inventories.fromTag(player.inventory.getInvStack(slot).getOrCreateTag().getCompound("BlockEntityTag"), defaultedList);
+						defaultedList.forEach(stack -> {
+							sum.updateAndGet(v -> (float) (v + ((ItemWeight) (Object) stack).getWeight()));
+						});
+					}
 				}
+				System.out.println(sum.get());
 
 			}
 		});
