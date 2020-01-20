@@ -26,7 +26,7 @@ public abstract class BlockStateMixin {
 
 	@Inject(at=@At("HEAD"), method = "getHardness(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)F", cancellable = true)
 	public void getHardness(BlockView view, BlockPos pos, CallbackInfoReturnable<Float> cir) {
-		cir.setReturnValue(this.getBlock().getHardness(((BlockState) (Object) this), view, pos) * 50);
+		cir.setReturnValue(this.getBlock().getHardness(((BlockState) (Object) this), view, pos) * 1);
 	}
 
 }

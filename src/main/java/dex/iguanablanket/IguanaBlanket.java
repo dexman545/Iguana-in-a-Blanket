@@ -19,8 +19,6 @@ public class IguanaBlanket implements ModInitializer {
 	public void onInitialize() {
 		ServerTickCallback.EVENT.register(t -> {
 			for (ServerPlayerEntity player : t.getPlayerManager().getPlayerList()) {
-				player.abilities.setWalkSpeed(0.001f);
-				player.setMovementSpeed(0.001f);
 				player.getBlockState().getBlock(); //gets block player is in
 
 				//Item weight calc
@@ -29,7 +27,6 @@ public class IguanaBlanket implements ModInitializer {
 					int slot = it.next();
 					sum.updateAndGet(v -> (float) (v + ((ItemWeight) (Object) player.inventory.getInvStack(slot)).getWeight()));
 					if (Block.getBlockFromItem(player.inventory.getInvStack(slot).getItem()) instanceof ShulkerBoxBlock) {
-						//System.out.println(player.inventory.getInvStack(slot).getOrCreateTag());
 						DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
 						Inventories.fromTag(player.inventory.getInvStack(slot).getOrCreateTag().getCompound("BlockEntityTag"), defaultedList);
 						defaultedList.forEach(stack -> {
@@ -37,7 +34,9 @@ public class IguanaBlanket implements ModInitializer {
 						});
 					}
 				}
-				System.out.println(sum.get());
+
+				player.abilities.setWalkSpeed(0.1f * ((100f - (sum.get() > 100f ? 100f : sum.get())) / 100f));
+				//player.setMovementSpeed(0.1f * ((100f - (sum.get() > 100f ? 90f : sum.get())) / 100f));
 
 			}
 		});
