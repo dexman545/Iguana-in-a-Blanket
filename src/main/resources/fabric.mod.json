@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "void-flight",
+  "version": "${version}",
+
+  "name": "Iguana in a Blanket",
+  "description": "Iguana Tweaks for Fabric",
+  "authors": [
+    "Deximus-Maximus"
+  ],
+  "contact": {
+    "discord": "Deximus-Maximus#0682"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/iguana-blanket/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dex.iguanablanket.IguanaBlanket"
+    ],
+    "client": ["dex.iguanablanket.IguanaBlanketClient"]
+  },
+  "mixins": [
+    "iguana-blanket.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.2",
+    "fabric": "*",
+    "minecraft": "1.15.x"
+  }
+}

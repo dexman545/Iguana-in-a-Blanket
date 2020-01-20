@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "dex.iguanablanket.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlockStateMixin",
+    "ItemStackMixin"
+  ],
+  "server": [
+    "BlockStateMixin",
+    "ItemStackMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
