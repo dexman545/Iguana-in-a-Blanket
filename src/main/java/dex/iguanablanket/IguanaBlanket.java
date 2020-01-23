@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DefaultedList;
 
@@ -35,8 +36,9 @@ public class IguanaBlanket implements ModInitializer {
 					}
 				}
 
-				player.abilities.setWalkSpeed(0.1f * ((100f - (sum.get() > 100f ? 100f : sum.get())) / 100f));
-				//player.setMovementSpeed(0.1f * ((100f - (sum.get() > 100f ? 90f : sum.get())) / 100f));
+				player.abilities.setWalkSpeed(0.1f * ((100f - (sum.get() > 100f ? 90f : sum.get())) / 100f));
+				player.setMovementSpeed(0.1f * ((100f - (sum.get() > 100f ? 90f : sum.get())) / 100f));
+
 
 			}
 		});

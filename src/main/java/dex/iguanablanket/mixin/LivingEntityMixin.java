@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class LivingEntityMixin {
     @ModifyConstant(method = "jump()V", constant = @Constant(floatValue = 0.2F))
     private float setHJumpModifier(float m) {
-        System.out.println("test");
+        System.out.println(m);
         return 0.0F;
     }
 }
