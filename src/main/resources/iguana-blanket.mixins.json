@@ -5,12 +5,16 @@
   "mixins": [
     "BlockStateMixin",
     "ItemStackMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "GameRendererMixin"
   ],
   "server": [
     "BlockStateMixin",
     "ItemStackMixin",
     "LivingEntityMixin"
+  ],
+  "client": [
+    "GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
