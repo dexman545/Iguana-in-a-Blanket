@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,11 +27,18 @@ import java.util.stream.IntStream;
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin implements ItemWeight {
 
+	//Max stack size
 	@Inject(at=@At("HEAD"), method = "getMaxCount()I", cancellable = true)
 	public void getMaxCount(CallbackInfoReturnable<Integer> cir) {
-		cir.setReturnValue(3);
+		if (Registry.ITEM.get(Identifier.tryParse("minecraft:stone")) == ((ItemStack) (Object) this).getItem()) {
+			cir.setReturnValue(10);
+		} else {
+			cir.setReturnValue(3);
+		}
+
 	}
 
+	//Weight of the stack
 	@Override
 	public float getWeight() {
 		AtomicReference<Float> sum = new AtomicReference<>(0f);
@@ -46,11 +54,13 @@ public abstract class ItemStackMixin implements ItemWeight {
 		return sum.get();
 	}
 
+	//weight of an item
 	@Override
 	public float getSingleWeight() {
 		return ((ItemStack) (Object) this).getCount() * 3.0f;
 	}
 
+	//add weight tooltip
 	@Inject(at=@At("RETURN"), method = "getTooltip(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/client/item/TooltipContext;)Ljava/util/List;", cancellable = true)
 	public void getTooltip(PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir) {
 		List<Text> toolTip = cir.getReturnValue();
