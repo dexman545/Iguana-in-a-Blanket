@@ -6,12 +6,16 @@
     "BlockStateMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "PlayerInventoryMixin",
+    "BlockMixin"
   ],
   "server": [
     "BlockStateMixin",
     "ItemStackMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "PlayerInventoryMixin",
+    "BlockMixin"
   ],
   "client": [
     "GameRendererMixin"

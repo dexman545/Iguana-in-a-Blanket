@@ -1,5 +1,6 @@
 package dex.iguanablanket.mixin;
 
+import dex.iguanablanket.Data;
 import dex.iguanablanket.Helper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
@@ -11,12 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
-
     //Prevents item weight making FOV do wild changes
     @Inject(at=@At("RETURN"), method = "getFov(Lnet/minecraft/client/render/Camera;FZ)D", cancellable = true)
     public void fovFix(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cir) {
         double stdFov = MinecraftClient.getInstance().options.fov;
         Double x = cir.getReturnValue();
-        cir.setReturnValue(Helper.clampValue(x, stdFov * 0.9, stdFov * 1.1));
+        cir.setReturnValue(Helper.clampValue(x, stdFov * (1 - Data.fovClamp), stdFov * (1 + Data.fovClamp)));
     }
 }
