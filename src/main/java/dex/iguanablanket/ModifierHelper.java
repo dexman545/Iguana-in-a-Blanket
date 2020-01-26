@@ -11,18 +11,10 @@ public class ModifierHelper {
             entity.getAttributes().get(EntityAttributes.MOVEMENT_SPEED).removeModifier(modifier.getID());
         }
 
-
         //Apply new modifier
         EntityAttributeModifier newAttributeModifier = new EntityAttributeModifier(modifier.getID(), modifier.toString(), value, EntityAttributeModifier.Operation.ADDITION);
-
         entity.getAttributes().get(EntityAttributes.MOVEMENT_SPEED).addModifier(newAttributeModifier);
-        /*entity.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).addModifier(newAttributeModifier);
-        if (modifier == Data.AttributeModifier.ENCUMBRANCE_SLOWDOWN) {
-            //System.out.println(newAttributeModifier.getAmount());
-            System.out.println(entity.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).getValue());
-        }*/
 
     }
-
 
 }

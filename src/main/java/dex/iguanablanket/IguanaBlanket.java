@@ -62,8 +62,8 @@ public class IguanaBlanket implements ModInitializer {
 
 		}));
 
-		PlayerInvChangeCallback.EVENT.register((player, slot, stack) -> {
-			/*float currentWeight = 0f;
+		/*PlayerInvChangeCallback.EVENT.register((player, slot, stack) -> {
+			float currentWeight = 0f;
 			for (PrimitiveIterator.OfInt it = IntStream.range(0, player.inventory.getInvSize()).iterator(); it.hasNext(); ) {
 				int nSlot = it.next();
 
@@ -88,9 +88,8 @@ public class IguanaBlanket implements ModInitializer {
 			store.test.put(player.getUuidAsString(), new Storage.Tuple(player, deltaMovementSpeed));
 			//ModifierHelper.changeMovementSpeed(player, Data.AttributeModifier.ENCUMBRANCE_SLOWDOWN, -deltaMovementSpeed);
 
-			return ActionResult.PASS;*/
 			return ActionResult.PASS;
-		});
+		});*/
 
 	}
 }
