@@ -12,7 +12,7 @@ public class IguanaBlanketClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientTickCallback.EVENT.register(t -> {
-			//t.options.fov = MinecraftClient.getInstance().options.fov;
+
 		});
 	}
 }

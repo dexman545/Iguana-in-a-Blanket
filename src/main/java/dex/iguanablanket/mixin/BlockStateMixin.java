@@ -33,18 +33,5 @@ public abstract class BlockStateMixin {
 		cir.setReturnValue(this.getBlock().getHardness(((BlockState) (Object) this), view, pos) * 1);
 	}
 
-	/*@Inject(at=@At("HEAD"), method = "onEntityCollision(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/Entity;)V", cancellable = true)
-	public void modifyCollisionSpeed(World world, BlockPos pos, Entity entity, CallbackInfo ci) {
-		if (entity instanceof PlayerEntity) {
-			if (Registry.BLOCK.get(Identifier.tryParse("minecraft:stone")) == world.getBlockState(entity.getBlockPos().down()).getBlock()) {
-				((PlayerEntity) entity).getAttributes().get(EntityAttributes.MOVEMENT_SPEED).setBaseValue(0.01f);
-				System.out.println("1");
-			} else {
-				((PlayerEntity) entity).getAttributes().get(EntityAttributes.MOVEMENT_SPEED).setBaseValue(0.1f);
-				System.out.println("2");
-			}
-		}
-	}*/
-
 }
 
