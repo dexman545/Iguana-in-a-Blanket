@@ -69,7 +69,7 @@ public class IguanaBlanketClient implements ClientModInitializer {
 			int value = (int) Math.round(4 * (Math.min(weight, maxWeight) / maxWeight));
 
 			encumbrance.setCurrentImage(value);
-			//encumbrance.setHidden(true);
+			encumbrance.setHidden(!IguanaBlanket.cfg.displayEncumbranceIcon());
 
 
 		});

@@ -45,10 +45,11 @@ public abstract class LivingEntityMixin extends Entity {
     private void initAttributes(CallbackInfo ci) {
         ((LivingEntity) (Object) this).getAttributes().register(IguanaEntityAttributes.MAX_WEIGHT);
         ((LivingEntity) (Object) this).getAttributes().register(IguanaEntityAttributes.WEIGHT);
+        ((LivingEntity) (Object) this).getAttributes().register(IguanaEntityAttributes.SUSCEPTIBILITY);
     }
 
     @Inject(at=@At("INVOKE"), method = "setHealth(F)V", cancellable = true)
-    private void playerInvChange(float health, CallbackInfo ci) {
+    private void entityHealthChange(float health, CallbackInfo ci) {
         ActionResult result = EntityHealthChangeCallback.EVENT.invoker().health(((LivingEntity) (Object) this), health);
         if (result == ActionResult.FAIL) {
             ci.cancel();

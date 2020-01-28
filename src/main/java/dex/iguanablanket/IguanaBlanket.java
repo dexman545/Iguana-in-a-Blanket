@@ -2,17 +2,34 @@ package dex.iguanablanket;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
+import org.aeonbits.owner.ConfigFactory;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.PrimitiveIterator;
 import java.util.stream.IntStream;
 
 public class IguanaBlanket implements ModInitializer {
+	static IguanaConfig cfg;
 
 	@Override
 	public void onInitialize() {
+		//configuration
+		String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana.cfg";
+		ConfigFactory.setProperty("configDir", config);
+		cfg = ConfigFactory.create(IguanaConfig.class);
+
+		//generate config file; removes incorrect values from existing one as well
+		try {
+			cfg.store(new FileOutputStream(config), "Iguana in a Blanket Configuration File" +
+					"\nNote: Default options only effect new entities. Options will reload after ~5 seconds from save.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		ServerTickCallback.EVENT.register(t -> {
 
@@ -37,8 +54,9 @@ public class IguanaBlanket implements ModInitializer {
 
 		EntityHealthChangeCallback.EVENT.register(((entity, health) -> {
 			float maxHealth = entity.getMaximumHealth();
+			double susceptibility = entity.getAttributeInstance(IguanaEntityAttributes.SUSCEPTIBILITY).getValue();
 			double defaultMovementSpeed = entity.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).getBaseValue();
-			double deltaMovementSpeed = (defaultMovementSpeed * ((maxHealth - Math.min(maxHealth, health)) / maxHealth));
+			double deltaMovementSpeed = susceptibility * (defaultMovementSpeed * ((maxHealth - Math.min(maxHealth, health)) / maxHealth));
 
 			ModifierHelper.changeMovementSpeed(entity, Data.AttributeModifier.HEALTH_SLOWDOWN, -deltaMovementSpeed);
 

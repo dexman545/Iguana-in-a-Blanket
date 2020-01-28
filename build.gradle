@@ -31,7 +31,10 @@ dependencies {
 
 	modCompile "com.github.vini2003:Spinnery:1.15.2-1.0.0"
 	include "com.github.vini2003:Spinnery:1.15.2-1.0.0"
-	
+
+	//OWNER library
+	modCompile "org.aeonbits.owner:owner:1.0.10"
+	include "org.aeonbits.owner:owner:1.0.10"
 }
 
 processResources {

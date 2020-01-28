@@ -1,5 +1,6 @@
 package dex.iguanablanket.mixin;
 
+import dex.iguanablanket.IguanaBlanket;
 import dex.iguanablanket.ItemWeight;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -47,7 +48,7 @@ public abstract class ItemStackMixin implements ItemWeight {
 			DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
 			Inventories.fromTag(((ItemStack) (Object) this).getOrCreateTag().getCompound("BlockEntityTag"), defaultedList);
 			defaultedList.forEach(stack -> {
-				sum.updateAndGet(v -> (float) (v + (((ItemWeight) (Object) stack).getSingleWeight())));
+				sum.updateAndGet(v -> (float) (v + (cfg.shulkerboxWeightReductionFactor() * ((ItemWeight) (Object) stack).getSingleWeight())));
 			});
 		}
 
