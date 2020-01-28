@@ -20,16 +20,25 @@ public class IguanaBlanketClient implements ClientModInitializer {
 	// WInterface
 	WInterface mainInterface = new WInterface(WPosition.of(WType.FREE, 8, 8, 0));
 
-
-	Identifier[] textures = new Identifier[11];
+	Identifier[] textures = new Identifier[5];
 
 	WDynamicImage encumbrance = new WDynamicImage(WPosition.of(WType.ANCHORED, 0, 0, 0, mainInterface),
-			WSize.of(25, 25), mainInterface);
+			WSize.of(15, 15), mainInterface);
+
 
 	private void genTextures() {
-		for (int i = 1; i <= 9; i++) {
-			textures[i-1] = (new Identifier(modid, "textures/" + i +".png"));
+		for (int i = 0; i < 5; i++) {
+			textures[i] = (new Identifier(modid, "textures/encumbrance_000" + i +".png"));
 		}
+
+		/*
+		Image translation:
+		轻 light 0
+		侐 immobile 4
+		大 heavy 3
+		难 difficult 2
+		羽 feather 1
+		*/
 
 		encumbrance.setTextures(textures);
 
@@ -40,20 +49,10 @@ public class IguanaBlanketClient implements ClientModInitializer {
 
 		genTextures();
 
-
 		InGameHudScreen.addOnInitialize(() -> {
-			// WInterfaceHolder
 			WInterfaceHolder holder = InGameHudScreen.getHolder();
-			// WInterfaceHolder
-
-
 			holder.add(mainInterface);
 
-			// WStaticText
-			//WStaticText staticTextA = new WStaticText(WPosition.of(WType.ANCHORED, 0, 0, 0, mainInterface), mainInterface, new LiteralText("StaticText A"));
-			// WStaticText
-
-			//mainInterface.add(staticTextA);
 			mainInterface.add(encumbrance);
 		});
 
@@ -67,9 +66,10 @@ public class IguanaBlanketClient implements ClientModInitializer {
 				maxWeight = player.getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
 			}
 
-			int value = (int) Math.round(10 * (Math.min(weight, maxWeight) / maxWeight));
+			int value = (int) Math.round(4 * (Math.min(weight, maxWeight) / maxWeight));
 
-			encumbrance.setCurrentImage(Math.min(value, 8));
+			encumbrance.setCurrentImage(value);
+			//encumbrance.setHidden(true);
 
 
 		});
