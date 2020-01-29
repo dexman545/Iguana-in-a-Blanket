@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "void-flight",
+  "id": "iguana-blanket",
   "version": "${version}",
 
   "name": "Iguana in a Blanket",
@@ -12,7 +12,7 @@
     "discord": "Deximus-Maximus#0682"
   },
 
-  "license": "CC0-1.0",
+  "license": "LGPL-3.0",
   "icon": "assets/iguana-blanket/icon.png",
 
   "environment": "*",
