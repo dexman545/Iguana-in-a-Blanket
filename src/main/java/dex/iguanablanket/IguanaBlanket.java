@@ -7,6 +7,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -79,6 +81,12 @@ public class IguanaBlanket implements ModInitializer {
 
 			return ActionResult.PASS;
 
+		}));
+
+		StatusEffectChangeCallback.EVENT.register((entity -> {
+			entity.getStatusEffect(StatusEffects.STRENGTH);
+
+			return ActionResult.PASS;
 		}));
 
 	}
