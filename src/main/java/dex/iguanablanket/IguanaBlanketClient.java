@@ -1,11 +1,14 @@
 package dex.iguanablanket;
 
+import dex.iguanablanket.mixin.EntityMixin;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
@@ -64,6 +67,10 @@ public class IguanaBlanketClient implements ClientModInitializer {
 			if (player != null) {
 				weight = player.getAttributeInstance(IguanaEntityAttributes.WEIGHT).getValue();
 				maxWeight = player.getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
+
+				if (weight >= maxWeight) {
+					((EntityMixin)(Entity)player).callSetPose(EntityPose.SWIMMING);
+				}
 			}
 
 			int value = (int) Math.round(4 * (Math.min(weight, maxWeight) / maxWeight));

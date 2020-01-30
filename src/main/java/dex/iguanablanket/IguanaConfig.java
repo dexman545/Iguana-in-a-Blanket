@@ -20,4 +20,7 @@ public interface IguanaConfig extends Config, Reloadable, Accessible {
     @DefaultValue("1.0")
     float shulkerboxWeightReductionFactor();
 
+    @DefaultValue("true")
+    boolean playerOverburdenedDoesPushups();
+
 }

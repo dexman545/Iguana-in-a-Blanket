@@ -7,13 +7,15 @@
     "ItemStackMixin",
     "LivingEntityMixin",
     "GameRendererMixin",
-    "BlockMixin"
+    "BlockMixin",
+    "EntityMixin"
   ],
   "server": [
     "BlockStateMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "BlockMixin"
+    "BlockMixin",
+    "EntityMixin"
   ],
   "client": [
     "GameRendererMixin"

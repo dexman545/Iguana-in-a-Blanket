@@ -3,10 +3,13 @@ package dex.iguanablanket.mixin;
 import dex.iguanablanket.EntityHealthChangeCallback;
 import dex.iguanablanket.IguanaEntityAttributes;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.ElytraItem;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,14 +30,44 @@ public abstract class LivingEntityMixin extends Entity {
         return (float) (m * (speed/defaultMovementSpeed));
     }
 
-    @Inject(method = "getJumpVelocity()F", at = @At("HEAD"))
+    @Inject(method = "getJumpVelocity()F", at = @At("HEAD"), cancellable = true)
     private void setJumpHeightModifier(CallbackInfoReturnable<Float> cir) {
         double speed = ((LivingEntity) (Object) this).getAttributes().get(EntityAttributes.MOVEMENT_SPEED).getValue();
         double defaultMovementSpeed = ((LivingEntity) (Object) this).getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).getBaseValue();
 
-        ((LivingEntity) (Object) this).setVelocity(((LivingEntity) (Object) this).getVelocity().multiply(speed/defaultMovementSpeed, 1D, speed/defaultMovementSpeed));
+        double weight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.WEIGHT).getValue();
+        double maxWeight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
 
+        if (weight >= maxWeight) {
+            cir.cancel();
+        } else {
+            ((LivingEntity) (Object) this).setVelocity(((LivingEntity) (Object) this).getVelocity().multiply(speed/defaultMovementSpeed, 1D, speed/defaultMovementSpeed));
+        }
     }
+
+    /*@Inject(method = "tick()V", at = @At("TAIL"))
+    private void modifyFlight(CallbackInfo ci) {
+        if (!(((LivingEntity) (Object) this).world.isClient)) {
+            double weight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.WEIGHT).getValue();
+            double maxWeight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
+            double scale = (weight + maxWeight) / maxWeight;
+
+            if (((LivingEntity) (Object) this).isFallFlying() && !((LivingEntity) (Object) this).onGround) {
+                if (weight > maxWeight) {
+                    ((LivingEntity) (Object) this).getArmorItems().forEach(t -> {
+                        if (t.getItem() instanceof ElytraItem) {
+                            System.out.println("m");
+                            t.setDamage(431);
+                        }
+                    });
+                } else {
+                    System.out.println(scale);
+                    ((LivingEntity) (Object) this).setVelocity(((LivingEntity) (Object) this).getVelocity().multiply(scale, scale, scale));
+                }
+            }
+        }
+
+    }*/
 
 
     public LivingEntityMixin(EntityType<?> entityType_1, World world_1) {

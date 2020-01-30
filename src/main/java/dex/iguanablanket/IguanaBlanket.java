@@ -1,9 +1,13 @@
 package dex.iguanablanket;
 
+import dex.iguanablanket.mixin.EntityMixin;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.ElytraItem;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import org.aeonbits.owner.ConfigFactory;
@@ -48,6 +52,19 @@ public class IguanaBlanket implements ModInitializer {
 				double deltaMovementSpeed = defaultMovementSpeed - (defaultMovementSpeed * ((maxWeight - Math.min(maxWeight, currentWeight)) / maxWeight));
 
 				ModifierHelper.changeMovementSpeed(player, Data.AttributeModifier.ENCUMBRANCE_SLOWDOWN, -deltaMovementSpeed);
+
+				//player collapse and elytra break
+				if (currentWeight >= maxWeight) {
+					player.setSwimming(!cfg.playerOverburdenedDoesPushups());
+					((EntityMixin)(Entity)player).callSetPose(EntityPose.SWIMMING);
+					if (player.isFallFlying() && !player.onGround) {
+						player.getArmorItems().forEach(v -> {
+							if (v.getItem() instanceof ElytraItem) {
+								v.setDamage(431);
+							}
+						});
+					}
+				}
 
 			}
 		});
