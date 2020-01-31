@@ -38,6 +38,17 @@ public abstract class Data {
             public UUID getID() {
                 return UUID.nameUUIDFromBytes(this.toString().getBytes());
             }
+        },
+        STRENGTH {
+            @Override
+            public String toString() {
+                return "iguana.strength";
+            }
+
+            @Override
+            public UUID getID() {
+                return UUID.nameUUIDFromBytes(this.toString().getBytes());
+            }
         };
 
         public UUID getID() {

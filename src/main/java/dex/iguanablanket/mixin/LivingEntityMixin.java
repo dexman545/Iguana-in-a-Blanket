@@ -2,20 +2,13 @@ package dex.iguanablanket.mixin;
 
 import dex.iguanablanket.EntityHealthChangeCallback;
 import dex.iguanablanket.IguanaEntityAttributes;
-import dex.iguanablanket.StatusEffectChangeCallback;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ElytraItem;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,8 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
-
-    @Shadow private boolean effectsChanged;
 
     @ModifyConstant(method = "jump()V", constant = @Constant(floatValue = 0.2F))
     private float setHJumpModifier(float m) {
@@ -95,14 +86,4 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Inject(at=@At("INVOKE"), method = "tickStatusEffects()V", cancellable = true)
-    private void entityEffectsChanged(CallbackInfo ci) {
-        if (this.effectsChanged) {
-            ActionResult result = StatusEffectChangeCallback.EVENT.invoker().effectChange(((LivingEntity) (Object) this));
-            if (result == ActionResult.FAIL) {
-                ci.cancel();
-            }
-        }
-
-    }
 }

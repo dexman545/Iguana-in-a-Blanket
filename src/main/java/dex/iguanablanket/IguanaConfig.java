@@ -23,4 +23,7 @@ public interface IguanaConfig extends Config, Reloadable, Accessible {
     @DefaultValue("true")
     boolean playerOverburdenedDoesPushups();
 
+    @DefaultValue("0.2")
+    double potionEffectWeightScaleFactor();
+
 }

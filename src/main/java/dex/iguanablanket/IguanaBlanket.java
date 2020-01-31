@@ -6,7 +6,9 @@ import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ElytraItem;
@@ -16,6 +18,8 @@ import org.aeonbits.owner.ConfigFactory;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.PrimitiveIterator;
 import java.util.stream.IntStream;
 
@@ -47,12 +51,14 @@ public class IguanaBlanket implements ModInitializer {
 					currentWeight += ((ItemWeight) (Object) player.inventory.getInvStack(slot)).getWeight();
 				}
 
+				ModifierHelper.updateMaxWeight(player);
+
 				player.getAttributeInstance(IguanaEntityAttributes.WEIGHT).setBaseValue(currentWeight);
 
 				double defaultMovementSpeed = player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).getBaseValue();
 				double maxWeight = player.getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
 				double deltaMovementSpeed = defaultMovementSpeed - (defaultMovementSpeed * ((maxWeight - Math.min(maxWeight, currentWeight)) / maxWeight));
-
+				
 				ModifierHelper.changeMovementSpeed(player, Data.AttributeModifier.ENCUMBRANCE_SLOWDOWN, -deltaMovementSpeed);
 
 				//player collapse and elytra break
@@ -81,12 +87,6 @@ public class IguanaBlanket implements ModInitializer {
 
 			return ActionResult.PASS;
 
-		}));
-
-		StatusEffectChangeCallback.EVENT.register((entity -> {
-			entity.getStatusEffect(StatusEffects.STRENGTH);
-
-			return ActionResult.PASS;
 		}));
 
 	}

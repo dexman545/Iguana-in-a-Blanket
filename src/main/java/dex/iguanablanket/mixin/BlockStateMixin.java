@@ -25,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockState.class)
 public abstract class BlockStateMixin {
 
-
 	@Shadow public abstract Block getBlock();
 
 	@Inject(at=@At("HEAD"), method = "getHardness(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)F", cancellable = true)
