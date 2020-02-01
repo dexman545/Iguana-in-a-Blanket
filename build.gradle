@@ -35,6 +35,12 @@ dependencies {
 	//OWNER library
 	modCompile "org.aeonbits.owner:owner:1.0.10"
 	include "org.aeonbits.owner:owner:1.0.10"
+
+	// https://mvnrepository.com/artifact/org.luaj/luaj-jse
+	modCompile group: 'org.luaj', name: 'luaj-jse', version: '3.0.1'
+	include group: 'org.luaj', name: 'luaj-jse', version: '3.0.1'
+
+
 }
 
 processResources {
