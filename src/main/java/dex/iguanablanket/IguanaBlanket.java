@@ -40,9 +40,11 @@ public class IguanaBlanket implements ModInitializer {
 			for (ServerPlayerEntity player : t.getPlayerManager().getPlayerList()) {
 				//Item weight calc
 				float currentWeight = 0f;
-				for (PrimitiveIterator.OfInt it = IntStream.range(0, player.inventory.getInvSize()).iterator(); it.hasNext(); ) {
-					int slot = it.next();
-					currentWeight += ((ItemWeight) (Object) player.inventory.getInvStack(slot)).getWeight();
+				if (!player.isCreative() && !player.isSpectator()) {
+					for (PrimitiveIterator.OfInt it = IntStream.range(0, player.inventory.getInvSize()).iterator(); it.hasNext(); ) {
+						int slot = it.next();
+						currentWeight += ((ItemWeight) (Object) player.inventory.getInvStack(slot)).getWeight();
+					}
 				}
 
 				ModifierHelper.updateMaxWeight(player);
