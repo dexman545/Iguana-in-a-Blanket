@@ -2,17 +2,23 @@ package dex.iguanablanket;
 
 import dex.iguanablanket.mixin.EntityMixin;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.tag.ItemTags;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.registry.Registry;
 import org.aeonbits.owner.ConfigFactory;
 
+import java.io.BufferedWriter;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.PrimitiveIterator;
 import java.util.stream.IntStream;
@@ -85,5 +91,51 @@ public class IguanaBlanket implements ModInitializer {
 
 		}));
 
+
+		ServerStartCallback.EVENT.register(minecraftServer -> {
+			String fileName = FabricLoader.getInstance().getConfigDirectory().toString() + "/test.txt";
+
+			Registry.BLOCK.forEach(t -> {
+				try {
+					whenWriteStringUsingBufferedWritter_thenCorrect(Registry.BLOCK.getId(t).toString() + "\n", fileName);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+			//get itemtags
+			System.out.println(ItemTags.getContainer().getKeys());
+			System.out.println();
+
+			//get items in tag
+			ItemTags.getContainer().getKeys().forEach(identifier -> {
+				System.out.println(TagRegistry.item(identifier).values());
+			});
+
+			Registry.ITEM.forEach(t -> {
+				try {
+					whenWriteStringUsingBufferedWritter_thenCorrect(Registry.ITEM.getId(t).toString() + "\n", fileName);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+
+
+		});
+
+		ServerReloadCallback.EVENT.register(t -> {
+			try {
+				LuaConfigLoader.threadedmain(new String[] {"test", "meh"});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+
+	}
+
+	public void whenWriteStringUsingBufferedWritter_thenCorrect(String str, String fileName) throws IOException {
+		BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true));
+		//writer.write(str);
+		writer.append(str);
+		writer.close();
 	}
 }

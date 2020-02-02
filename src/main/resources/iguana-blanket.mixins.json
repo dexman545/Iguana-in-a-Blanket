@@ -8,14 +8,16 @@
     "LivingEntityMixin",
     "GameRendererMixin",
     "BlockMixin",
-    "EntityMixin"
+    "EntityMixin",
+    "MinecraftServerMixin"
   ],
   "server": [
     "BlockStateMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "BlockMixin",
-    "EntityMixin"
+    "EntityMixin",
+    "MinecraftServerMixin"
   ],
   "client": [
     "GameRendererMixin"
