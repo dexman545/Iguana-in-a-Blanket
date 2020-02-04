@@ -6,7 +6,6 @@
     "BlockStateMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "GameRendererMixin",
     "BlockMixin",
     "EntityMixin",
     "MinecraftServerMixin"
@@ -20,7 +19,8 @@
     "MinecraftServerMixin"
   ],
   "client": [
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "ItemStackMixinClient"
   ],
   "injectors": {
     "defaultRequire": 1

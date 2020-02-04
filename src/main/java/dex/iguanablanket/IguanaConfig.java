@@ -26,4 +26,10 @@ public interface IguanaConfig extends Config, Reloadable, Accessible {
     @DefaultValue("0.2")
     double potionEffectWeightScaleFactor();
 
+    @Separator(",")
+    String[] luaScriptsConfigWeights();
+
+    @DefaultValue("10")
+    int maxLuaScriptsToLoad();
+
 }
