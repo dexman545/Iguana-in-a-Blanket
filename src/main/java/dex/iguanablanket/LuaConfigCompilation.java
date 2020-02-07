@@ -40,7 +40,7 @@ public class LuaConfigCompilation {
                 CompiledScript script = ((Compilable) scriptEngine).compile(x);
                 Bindings sb = new SimpleBindings();
                 script.eval(sb);
-                LuaFunction test = (LuaFunction) sb.get("test");
+                LuaFunction test = (LuaFunction) sb.get("generateTable");
                 LuaTable b = test.call(table).checktable();
 
                 updateMaps(b.get("itemweights").checktable(), weights);

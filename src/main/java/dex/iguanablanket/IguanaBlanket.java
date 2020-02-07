@@ -19,10 +19,7 @@ import org.aeonbits.owner.ConfigFactory;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.PrimitiveIterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -32,6 +29,12 @@ public class IguanaBlanket implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		try {
+			(new DefaultConfigWriter()).writeDefaultConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/default.lua");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		//configuration
 		String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana.cfg";
 		ConfigFactory.setProperty("configDir", config);
@@ -97,11 +100,11 @@ public class IguanaBlanket implements ModInitializer {
 
 
 		ServerStartCallback.EVENT.register(minecraftServer -> {
-			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua", genDefaultsTables());
+			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), genDefaultsTables());
 		});
 
 		ServerReloadCallback.EVENT.register(t -> {
-			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua", genDefaultsTables());
+			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), genDefaultsTables());
 		});
 
 	}
