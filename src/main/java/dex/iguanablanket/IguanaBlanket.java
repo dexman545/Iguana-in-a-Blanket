@@ -1,31 +1,34 @@
 package dex.iguanablanket;
 
+import dex.iguanablanket.config.DefaultConfigWriter;
+import dex.iguanablanket.config.GenerateData;
+import dex.iguanablanket.config.IguanaConfig;
+import dex.iguanablanket.config.LuaConfigCompilation;
+import dex.iguanablanket.helpers.Data;
+import dex.iguanablanket.helpers.ModifierHelper;
+import dex.iguanablanket.impl.EntityHealthChangeCallback;
+import dex.iguanablanket.impl.IguanaEntityAttributes;
+import dex.iguanablanket.impl.ItemWeight;
+import dex.iguanablanket.impl.ServerReloadCallback;
 import dex.iguanablanket.mixin.EntityMixin;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.registry.Registry;
 import org.aeonbits.owner.ConfigFactory;
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
 
 import java.io.*;
 import java.util.PrimitiveIterator;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class IguanaBlanket implements ModInitializer {
-	static IguanaConfig cfg;
+	public static IguanaConfig cfg;
 
 	@Override
 	public void onInitialize() {
@@ -98,112 +101,18 @@ public class IguanaBlanket implements ModInitializer {
 
 		}));
 
+		GenerateData gen = new GenerateData();
 
 		ServerStartCallback.EVENT.register(minecraftServer -> {
-			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), genDefaultsTables());
+			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), gen.genDefaultsTables());
 		});
 
 		ServerReloadCallback.EVENT.register(t -> {
-			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), genDefaultsTables());
+			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), gen.genDefaultsTables());
 		});
 
 	}
 
-	public void writeToFile(String str, FileWriter file) {
-		BufferedWriter writer = null;
-		if (file != null) {
-			try {
-				writer = new BufferedWriter(file);
-				writer.append("\n" + str);
-				writer.flush();
-				//writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 
-
-	public LuaTable genDefaultsTables() {
-		String dest = FabricLoader.getInstance().getConfigDirectory().toString() + "/" + "iguanaIdDump.txt";
-		FileWriter o = null;
-		try {
-			o = new FileWriter(dest, false);
-			o.write("");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		LuaTable BlockTable = LuaValue.tableOf();
-		writeToFile("Blocks",o);
-		//blocks
-		FileWriter finalO4 = o;
-		Registry.BLOCK.forEach(t -> {
-			writeToFile("\t" + Registry.BLOCK.getId(t).toString(), finalO4);
-			BlockTable.set(LuaValue.valueOf(Registry.BLOCK.getId(t).toString()), LuaValue.valueOf(t.asItem().getMaxCount()));
-		});
-
-		LuaTable BlockTagTable = LuaValue.tableOf();
-		writeToFile("BlockTags",o);
-		FileWriter finalO2 = o;
-		FileWriter finalO5 = o;
-		BlockTags.getContainer().getKeys().forEach(identifier -> {
-			writeToFile("\t" + identifier.toString(), finalO5);
-			LuaTable x = LuaTable.tableOf();
-			AtomicInteger i = new AtomicInteger();
-			TagRegistry.block(identifier).values().forEach(block -> {
-				x.set(i.get(), LuaValue.valueOf(Registry.BLOCK.getId(block).toString()));
-				i.addAndGet(1);
-				writeToFile("\t\t" + Registry.BLOCK.getId(block).toString(), finalO2);
-			});
-			BlockTagTable.set(LuaValue.valueOf(identifier.toString()), x);
-		});
-
-		//items
-		LuaTable ItemTable = LuaValue.tableOf();
-		writeToFile("Items",o);
-		FileWriter finalO3 = o;
-		Registry.ITEM.forEach(t -> {
-			writeToFile("\t" + Registry.ITEM.getId(t).toString(), finalO3);
-			ItemTable.set(LuaValue.valueOf(Registry.ITEM.getId(t).toString()), LuaValue.valueOf(t.asItem().getMaxCount()));
-		});
-
-		LuaTable ItemTagTable = LuaValue.tableOf();
-		writeToFile("ItemTags",o);
-		FileWriter finalO1 = o;
-		ItemTags.getContainer().getKeys().forEach(identifier -> {
-			LuaTable x = LuaTable.tableOf();
-			writeToFile("\t" + identifier.toString(), finalO1);
-			AtomicInteger i = new AtomicInteger();
-			TagRegistry.item(identifier).values().forEach(item -> {
-				writeToFile("\t\t" + Registry.ITEM.getId(item).toString(), finalO1);
-				x.set(i.get(), LuaValue.valueOf(Registry.ITEM.getId(item).toString()));
-				i.addAndGet(1);
-			});
-			ItemTagTable.set(LuaValue.valueOf(identifier.toString()), x);
-		});
-
-		writeToFile("Enchantments",o);
-		FileWriter finalO = o;
-		Registry.ENCHANTMENT.forEach(enchantment -> {
-			writeToFile("\t" + Registry.ENCHANTMENT.getId(enchantment).toString(), finalO);
-		});
-
-		LuaTable MasterTable = LuaValue.tableOf();
-		MasterTable.set("blocks", BlockTable);
-		MasterTable.set("items", ItemTable);
-		MasterTable.set("blocktags", BlockTagTable);
-		MasterTable.set("itemtags", ItemTagTable);
-
-		if (o != null) {
-			try {
-				o.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return MasterTable;
-	}
 
 }

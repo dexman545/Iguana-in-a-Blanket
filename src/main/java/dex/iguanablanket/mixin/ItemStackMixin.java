@@ -1,13 +1,12 @@
 package dex.iguanablanket.mixin;
 
-import dex.iguanablanket.ItemWeight;
-import dex.iguanablanket.LuaConfigCompilation;
+import dex.iguanablanket.impl.ItemWeight;
+import dex.iguanablanket.config.LuaConfigCompilation;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,8 +1,8 @@
 package dex.iguanablanket.mixin;
 
-import dex.iguanablanket.Data;
-import dex.iguanablanket.LuaConfigCompilation;
-import dex.iguanablanket.ModifierHelper;
+import dex.iguanablanket.helpers.Data;
+import dex.iguanablanket.config.LuaConfigCompilation;
+import dex.iguanablanket.helpers.ModifierHelper;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;

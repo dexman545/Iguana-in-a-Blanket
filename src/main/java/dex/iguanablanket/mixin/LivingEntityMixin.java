@@ -1,7 +1,7 @@
 package dex.iguanablanket.mixin;
 
-import dex.iguanablanket.EntityHealthChangeCallback;
-import dex.iguanablanket.IguanaEntityAttributes;
+import dex.iguanablanket.impl.EntityHealthChangeCallback;
+import dex.iguanablanket.impl.IguanaEntityAttributes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

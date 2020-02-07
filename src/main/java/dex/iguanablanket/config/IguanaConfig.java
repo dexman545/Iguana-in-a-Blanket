@@ -1,4 +1,4 @@
-package dex.iguanablanket;
+package dex.iguanablanket.config;
 
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
@@ -28,5 +28,8 @@ public interface IguanaConfig extends Config, Reloadable, Accessible {
 
     @DefaultValue("default.lua")
     String luaConfig();
+
+    @DefaultValue("0.1")
+    double fovClamp();
 
 }

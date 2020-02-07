@@ -1,4 +1,4 @@
-package dex.iguanablanket;
+package dex.iguanablanket.config;
 
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
@@ -90,7 +90,7 @@ public class LuaConfigCompilation {
             Thread thread = new Thread(new LuaConfigCompilation.Runner(script, table),"IguanaLuaConfigRunner");
             thread.start();
             thread.join();
-            System.out.println("done");
+            System.out.println("Completed Loading Iguana Config Data");
         } catch ( Exception e ) {
             e.printStackTrace();
         }

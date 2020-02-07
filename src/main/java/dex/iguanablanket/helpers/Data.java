@@ -1,9 +1,11 @@
-package dex.iguanablanket;
+package dex.iguanablanket.helpers;
+
+import dex.iguanablanket.IguanaBlanket;
 
 import java.util.UUID;
 
 public abstract class Data {
-    public static double fovClamp = 0.1;
+    public static double fovClamp = IguanaBlanket.cfg.fovClamp();
 
     public enum AttributeModifier {
         ENCUMBRANCE_SLOWDOWN {

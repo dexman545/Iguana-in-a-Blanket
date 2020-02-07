@@ -1,6 +1,6 @@
 package dex.iguanablanket.mixin;
 
-import dex.iguanablanket.ItemWeight;
+import dex.iguanablanket.impl.ItemWeight;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

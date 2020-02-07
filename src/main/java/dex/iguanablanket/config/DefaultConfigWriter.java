@@ -1,4 +1,4 @@
-package dex.iguanablanket;
+package dex.iguanablanket.config;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

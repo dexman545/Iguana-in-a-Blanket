@@ -1,21 +1,15 @@
 package dex.iguanablanket;
 
+import dex.iguanablanket.impl.IguanaEntityAttributes;
 import dex.iguanablanket.mixin.EntityMixin;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import spinnery.util.InGameHudScreen;
 import spinnery.widget.*;
-
-import java.util.ArrayList;
 
 public class IguanaBlanketClient implements ClientModInitializer {
 	static String modid = "iguana-blanket";
