@@ -8,8 +8,8 @@ import javax.script.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.HashMap;
+
 public class LuaConfigCompilation {
     public static HashMap<String, Float> blockslowdown = new HashMap<>();
     public static HashMap<String, Float> blockhardness = new HashMap<>();
@@ -50,7 +50,6 @@ public class LuaConfigCompilation {
                 updateMaps(b.get("blockslowdownfactor").checktable(), blockslowdown);
                 updateMaps(b.get("blockhardnessscale").checktable(), blockhardness);
 
-                //System.out.println("test answered: " + b);
             } catch (ScriptException e) {
                 System.out.println("Bad Script");
                 e.printStackTrace();
@@ -77,14 +76,11 @@ public class LuaConfigCompilation {
         }
     }
 
-    public static void threadedmain(final String[] args, LuaTable table) {
-        final String[] scripts = Arrays.copyOfRange(args, 0, Math.min(args.length, IguanaBlanket.cfg.maxLuaScriptsToLoad()));
+    public static void threadedmain(final String script, LuaTable table) {
         try {
-            Thread[] thread = new Thread[scripts.length];
-            for (int i = 0; i < thread.length; ++i)
-                thread[i] = new Thread(new LuaConfigCompilation.Runner(scripts[i], table),"IguanaLuaConfigRunner-"+i);
-            for (Thread item : thread) item.start();
-            for (Thread value : thread) value.join();
+            Thread thread = new Thread(new LuaConfigCompilation.Runner(script, table),"IguanaLuaConfigRunner");
+            thread.start();
+            thread.join();
             System.out.println("done");
         } catch ( Exception e ) {
             e.printStackTrace();

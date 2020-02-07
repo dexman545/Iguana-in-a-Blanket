@@ -97,11 +97,11 @@ public class IguanaBlanket implements ModInitializer {
 
 
 		ServerStartCallback.EVENT.register(minecraftServer -> {
-			LuaConfigCompilation.threadedmain(new String[] {FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua"}, genDefaultsTables());
+			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua", genDefaultsTables());
 		});
 
 		ServerReloadCallback.EVENT.register(t -> {
-			LuaConfigCompilation.threadedmain(new String[] {FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua"}, genDefaultsTables());
+			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua", genDefaultsTables());
 		});
 
 	}
