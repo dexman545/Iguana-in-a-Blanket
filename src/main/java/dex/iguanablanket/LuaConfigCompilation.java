@@ -15,8 +15,9 @@ public class LuaConfigCompilation {
     public static HashMap<String, Float> blockhardness = new HashMap<>();
     public static HashMap<String, Integer> stacksizes = new HashMap<>();
     public static HashMap<String, Float> weights = new HashMap<>();
+    public static HashMap<String, String> enchants = new HashMap<>();
 
-    public static void updateMaps(LuaTable table, HashMap<String, Float> map) {
+    public static void updateMapsFloat(LuaTable table, HashMap<String, Float> map) {
         for (int i = 0; i < table.checktable().keyCount(); i++) {
             LuaValue[] keys = table.checktable().keys();
             map.put(keys[i].toString(), table.get(keys[i]).tofloat());
@@ -27,6 +28,13 @@ public class LuaConfigCompilation {
         for (int i = 0; i < table.checktable().keyCount(); i++) {
             LuaValue[] keys = table.checktable().keys();
             map.put(keys[i].toString(), table.get(keys[i]).toint());
+        }
+    }
+
+    public static void updateMapsString(LuaTable table, HashMap<String, String> map) {
+        for (int i = 0; i < table.checktable().keyCount(); i++) {
+            LuaValue[] keys = table.checktable().keys();
+            map.put(keys[i].toString(), table.get(keys[i]).toString());
         }
     }
 
@@ -43,12 +51,13 @@ public class LuaConfigCompilation {
                 LuaFunction test = (LuaFunction) sb.get("generateTable");
                 LuaTable b = test.call(table).checktable();
 
-                updateMaps(b.get("itemweights").checktable(), weights);
-                updateMaps(b.get("blockweights").checktable(), weights);
+                updateMapsFloat(b.get("itemweights").checktable(), weights);
+                updateMapsFloat(b.get("blockweights").checktable(), weights);
                 updateMapsInt(b.get("itemstacksizes").checktable(), stacksizes);
                 updateMapsInt(b.get("blockstacksizes").checktable(), stacksizes);
-                updateMaps(b.get("blockslowdownfactor").checktable(), blockslowdown);
-                updateMaps(b.get("blockhardnessscale").checktable(), blockhardness);
+                updateMapsFloat(b.get("blockslowdownfactor").checktable(), blockslowdown);
+                updateMapsFloat(b.get("blockhardnessscale").checktable(), blockhardness);
+                updateMapsString(b.get("enchantmentsakesslowdownignorant").checktable(), enchants);
 
             } catch (ScriptException e) {
                 System.out.println("Bad Script");
