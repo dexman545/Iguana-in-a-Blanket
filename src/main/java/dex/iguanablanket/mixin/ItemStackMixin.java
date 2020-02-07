@@ -1,6 +1,7 @@
 package dex.iguanablanket.mixin;
 
 import dex.iguanablanket.ItemWeight;
+import dex.iguanablanket.LuaConfigCompilation;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.inventory.Inventories;
@@ -21,11 +22,12 @@ public abstract class ItemStackMixin implements ItemWeight {
 	//Max stack size
 	@Inject(at=@At("HEAD"), method = "getMaxCount()I", cancellable = true)
 	public void getMaxCount(CallbackInfoReturnable<Integer> cir) {
-		if (Registry.ITEM.get(Identifier.tryParse("minecraft:stone")) == ((ItemStack) (Object) this).getItem()) {
+		/*if (Registry.ITEM.get(Identifier.tryParse("minecraft:stone")) == ((ItemStack) (Object) this).getItem()) {
 			cir.setReturnValue(10);
 		} else {
 			cir.setReturnValue(3);
-		}
+		}*/
+		cir.setReturnValue(LuaConfigCompilation.stacksizes.getOrDefault(Registry.ITEM.getId(((ItemStack) (Object) this).getItem()).toString(), 0));
 
 	}
 
@@ -48,7 +50,8 @@ public abstract class ItemStackMixin implements ItemWeight {
 	//weight of an item
 	@Override
 	public float getSingleWeight() {
-		return ((ItemStack) (Object) this).getCount() * 3.0f;
+		return ((ItemStack) (Object) this).getCount() * LuaConfigCompilation.weights.getOrDefault(Registry.ITEM.getId(((ItemStack) (Object) this).getItem()).toString(), 0f);
+		//return ((ItemStack) (Object) this).getCount() * 3.0f;
 	}
 
 }

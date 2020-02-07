@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.PrimitiveIterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class IguanaBlanket implements ModInitializer {
@@ -104,7 +105,10 @@ public class IguanaBlanket implements ModInitializer {
 		});
 
 		ServerReloadCallback.EVENT.register(t -> {
-			LuaConfigLoader.threadedmain(new String[] {"return 'foo'"}, genTables2());
+			//LuaConfigLoader.threadedmain(new String[] {"return 'foo'"}, genTables2());
+			LuaConfigCompilation.threadedmain(new String[] {FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua"}, genTables2());
+			LuaConfigCompilation x = new LuaConfigCompilation();
+			//x.getConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua", genTables2());
 		});
 
 	}
@@ -164,9 +168,14 @@ public class IguanaBlanket implements ModInitializer {
 
 		LuaTable BlockTagTable = LuaValue.tableOf();
 		BlockTags.getContainer().getKeys().forEach(identifier -> {
+			LuaTable x = LuaTable.tableOf();
+			AtomicInteger i = new AtomicInteger();
 			TagRegistry.block(identifier).values().forEach(block -> {
-				BlockTagTable.set(LuaValue.valueOf(identifier.toString()), LuaValue.valueOf(Registry.BLOCK.getId(block).toString()));
+				x.set(i.get(), LuaValue.valueOf(Registry.BLOCK.getId(block).toString()));
+				i.addAndGet(1);
+				//BlockTagTable.set(LuaValue.valueOf(identifier.toString()), LuaValue.valueOf(Registry.BLOCK.getId(block).toString()));
 			});
+			BlockTagTable.set(LuaValue.valueOf(identifier.toString()), x);
 		});
 
 		//items
@@ -177,9 +186,14 @@ public class IguanaBlanket implements ModInitializer {
 
 		LuaTable ItemTagTable = LuaValue.tableOf();
 		ItemTags.getContainer().getKeys().forEach(identifier -> {
+			LuaTable x = LuaTable.tableOf();
+			AtomicInteger i = new AtomicInteger();
 			TagRegistry.item(identifier).values().forEach(item -> {
-				ItemTagTable.set(LuaValue.valueOf(identifier.toString()), LuaValue.valueOf(Registry.ITEM.getId(item).toString()));
+				x.set(i.get(), LuaValue.valueOf(Registry.ITEM.getId(item).toString()));
+				i.addAndGet(1);
+				//ItemTagTable.set(LuaValue.valueOf(identifier.toString()), LuaValue.valueOf(Registry.ITEM.getId(item).toString()));
 			});
+			ItemTagTable.set(LuaValue.valueOf(identifier.toString()), x);
 		});
 
 		LuaTable MasterTable = LuaValue.tableOf();
