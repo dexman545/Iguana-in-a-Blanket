@@ -79,7 +79,6 @@ public class LuaConfigCompilation {
 
     public static void threadedmain(final String[] args, LuaTable table) {
         final String[] scripts = Arrays.copyOfRange(args, 0, Math.min(args.length, IguanaBlanket.cfg.maxLuaScriptsToLoad()));
-
         try {
             Thread[] thread = new Thread[scripts.length];
             for (int i = 0; i < thread.length; ++i)

@@ -22,11 +22,6 @@ public abstract class ItemStackMixin implements ItemWeight {
 	//Max stack size
 	@Inject(at=@At("HEAD"), method = "getMaxCount()I", cancellable = true)
 	public void getMaxCount(CallbackInfoReturnable<Integer> cir) {
-		/*if (Registry.ITEM.get(Identifier.tryParse("minecraft:stone")) == ((ItemStack) (Object) this).getItem()) {
-			cir.setReturnValue(10);
-		} else {
-			cir.setReturnValue(3);
-		}*/
 		cir.setReturnValue(LuaConfigCompilation.stacksizes.getOrDefault(Registry.ITEM.getId(((ItemStack) (Object) this).getItem()).toString(), 0));
 
 	}
@@ -35,12 +30,12 @@ public abstract class ItemStackMixin implements ItemWeight {
 	@Override
 	public float getWeight() {
 		AtomicReference<Float> sum = new AtomicReference<>(0f);
-		sum.updateAndGet(v -> (float) (v + ((ItemWeight) (Object) this).getSingleWeight()));
+		sum.updateAndGet(v -> v + ((ItemWeight) (Object) this).getSingleWeight());
 		if (Block.getBlockFromItem(((ItemStack) (Object) this).getItem()) instanceof ShulkerBoxBlock) {
 			DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
 			Inventories.fromTag(((ItemStack) (Object) this).getOrCreateTag().getCompound("BlockEntityTag"), defaultedList);
 			defaultedList.forEach(stack -> {
-				sum.updateAndGet(v -> (float) (v + (cfg.shulkerboxWeightReductionFactor() * ((ItemWeight) (Object) stack).getSingleWeight())));
+				sum.updateAndGet(v -> v + (cfg.shulkerboxWeightReductionFactor() * ((ItemWeight) (Object) stack).getSingleWeight()));
 			});
 		}
 
@@ -51,7 +46,6 @@ public abstract class ItemStackMixin implements ItemWeight {
 	@Override
 	public float getSingleWeight() {
 		return ((ItemStack) (Object) this).getCount() * LuaConfigCompilation.weights.getOrDefault(Registry.ITEM.getId(((ItemStack) (Object) this).getItem()).toString(), 0f);
-		//return ((ItemStack) (Object) this).getCount() * 3.0f;
 	}
 
 }

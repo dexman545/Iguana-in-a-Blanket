@@ -1,6 +1,5 @@
 package dex.iguanablanket;
 
-import com.google.common.collect.HashMultimap;
 import dex.iguanablanket.mixin.EntityMixin;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
@@ -15,7 +14,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.aeonbits.owner.ConfigFactory;
 import org.luaj.vm2.LuaTable;
@@ -25,7 +23,6 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.PrimitiveIterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -100,15 +97,11 @@ public class IguanaBlanket implements ModInitializer {
 
 
 		ServerStartCallback.EVENT.register(minecraftServer -> {
-			LuaConfigLoader.threadedmain(new String[] {"return 'foo'"}, genTables2());
-
+			LuaConfigCompilation.threadedmain(new String[] {FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua"}, genDefaultsTables());
 		});
 
 		ServerReloadCallback.EVENT.register(t -> {
-			//LuaConfigLoader.threadedmain(new String[] {"return 'foo'"}, genTables2());
-			LuaConfigCompilation.threadedmain(new String[] {FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua"}, genTables2());
-			LuaConfigCompilation x = new LuaConfigCompilation();
-			//x.getConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua", genTables2());
+			LuaConfigCompilation.threadedmain(new String[] {FabricLoader.getInstance().getConfigDirectory().toString() + "/test.lua"}, genDefaultsTables());
 		});
 
 	}
@@ -120,45 +113,7 @@ public class IguanaBlanket implements ModInitializer {
 		writer.close();
 	}
 
-	public HashMap<String, Object> genTables() {
-		//init maps
-		HashMap<String, Object> defaultMap = new HashMap<>();
-		HashMap<Identifier, Integer> defaultBlockMap = new HashMap<>();
-		HashMap<Identifier, Integer> defaultItemMap = new HashMap<>();
-		HashMultimap<Identifier, Identifier> defaultBlockTagsMap = HashMultimap.create();
-		HashMultimap<Identifier, Identifier> defaultItemTagsMap = HashMultimap.create();
-
-		//blocks
-		Registry.BLOCK.forEach(t -> {
-			defaultBlockMap.put(Registry.BLOCK.getId(t), t.asItem().getMaxCount());
-		});
-
-		BlockTags.getContainer().getKeys().forEach(identifier -> {
-			TagRegistry.block(identifier).values().forEach(block -> {
-				defaultBlockTagsMap.put(identifier, Registry.BLOCK.getId(block));
-			});
-		});
-
-		//items
-		Registry.ITEM.forEach(t -> {
-			defaultItemMap.put(Registry.ITEM.getId(t), t.getMaxCount());
-		});
-
-		ItemTags.getContainer().getKeys().forEach(identifier -> {
-			TagRegistry.item(identifier).values().forEach(item -> {
-				defaultItemTagsMap.put(identifier, Registry.ITEM.getId(item));
-			});
-		});
-
-		defaultMap.put("blocks", defaultBlockMap);
-		defaultMap.put("items", defaultItemMap);
-		defaultMap.put("blocktags", defaultBlockTagsMap);
-		defaultMap.put("itemtags", defaultItemTagsMap);
-
-		return defaultMap;
-	}
-
-	public LuaTable genTables2() {
+	public LuaTable genDefaultsTables() {
 
 		LuaTable BlockTable = LuaValue.tableOf();
 		//blocks
@@ -173,7 +128,6 @@ public class IguanaBlanket implements ModInitializer {
 			TagRegistry.block(identifier).values().forEach(block -> {
 				x.set(i.get(), LuaValue.valueOf(Registry.BLOCK.getId(block).toString()));
 				i.addAndGet(1);
-				//BlockTagTable.set(LuaValue.valueOf(identifier.toString()), LuaValue.valueOf(Registry.BLOCK.getId(block).toString()));
 			});
 			BlockTagTable.set(LuaValue.valueOf(identifier.toString()), x);
 		});
@@ -191,7 +145,6 @@ public class IguanaBlanket implements ModInitializer {
 			TagRegistry.item(identifier).values().forEach(item -> {
 				x.set(i.get(), LuaValue.valueOf(Registry.ITEM.getId(item).toString()));
 				i.addAndGet(1);
-				//ItemTagTable.set(LuaValue.valueOf(identifier.toString()), LuaValue.valueOf(Registry.ITEM.getId(item).toString()));
 			});
 			ItemTagTable.set(LuaValue.valueOf(identifier.toString()), x);
 		});
