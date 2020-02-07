@@ -7,6 +7,8 @@ import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class LuaConfigLoader {
     // These globals are used by the server to compile scripts.
@@ -107,6 +109,7 @@ public class LuaConfigLoader {
         System.out.println("[["+script+"]] -> "+result);
     }
 
+
     // Simple read-only table whose contents are initialized from another table.
     static class ReadOnlyLuaTable extends LuaTable {
         public ReadOnlyLuaTable(LuaValue table) {
@@ -126,10 +129,9 @@ public class LuaConfigLoader {
     }
 
     static class Runner implements Runnable {
-        final String script1, script2;
-        Runner(String script1, String script2) {
+        final String script1;
+        Runner(String script1) {
             this.script1 = script1;
-            this.script2 = script2;
         }
         public void run() {
             try {
@@ -143,13 +145,13 @@ public class LuaConfigLoader {
         }
     }
 
-    public static void threadedmain(final String[] args) throws IOException {
-        final String script1 = args.length > 0? args[0]: null;
-        final String script2 = args.length > 1? args[1]: null;
+    public static void threadedmain(final String[] args, LuaTable table) {
+        final String[] scripts = Arrays.copyOfRange(args, 0, Math.min(args.length, IguanaBlanket.cfg.maxLuaScriptsToLoad()));
+
         try {
-            Thread[] thread = new Thread[10];
+            Thread[] thread = new Thread[scripts.length];
             for (int i = 0; i < thread.length; ++i)
-                thread[i] = new Thread(new Runner(script1, script2),"Runner-"+i);
+                thread[i] = new Thread(new Runner(scripts[i]),"IguanaLuaConfigRunner-"+i);
             for (Thread item : thread) item.start();
             for (Thread value : thread) value.join();
             System.out.println("done");

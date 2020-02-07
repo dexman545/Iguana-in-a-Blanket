@@ -18,6 +18,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.aeonbits.owner.ConfigFactory;
+import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -97,17 +99,12 @@ public class IguanaBlanket implements ModInitializer {
 
 
 		ServerStartCallback.EVENT.register(minecraftServer -> {
-			genTables();
+			LuaConfigLoader.threadedmain(new String[] {"return 'foo'"}, genTables2());
 
 		});
 
 		ServerReloadCallback.EVENT.register(t -> {
-			genTables();
-			try {
-				LuaConfigLoader.threadedmain(new String[] {"return 'foo'"});
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			LuaConfigLoader.threadedmain(new String[] {"return 'foo'"}, genTables2());
 		});
 
 	}
@@ -155,6 +152,43 @@ public class IguanaBlanket implements ModInitializer {
 		defaultMap.put("itemtags", defaultItemTagsMap);
 
 		return defaultMap;
+	}
+
+	public LuaTable genTables2() {
+
+		LuaTable BlockTable = LuaValue.tableOf();
+		//blocks
+		Registry.BLOCK.forEach(t -> {
+			BlockTable.set(LuaValue.valueOf(Registry.BLOCK.getId(t).toString()), LuaValue.valueOf(t.asItem().getMaxCount()));
+		});
+
+		LuaTable BlockTagTable = LuaValue.tableOf();
+		BlockTags.getContainer().getKeys().forEach(identifier -> {
+			TagRegistry.block(identifier).values().forEach(block -> {
+				BlockTagTable.set(LuaValue.valueOf(identifier.toString()), LuaValue.valueOf(Registry.BLOCK.getId(block).toString()));
+			});
+		});
+
+		//items
+		LuaTable ItemTable = LuaValue.tableOf();
+		Registry.ITEM.forEach(t -> {
+			ItemTable.set(LuaValue.valueOf(Registry.ITEM.getId(t).toString()), LuaValue.valueOf(t.asItem().getMaxCount()));
+		});
+
+		LuaTable ItemTagTable = LuaValue.tableOf();
+		ItemTags.getContainer().getKeys().forEach(identifier -> {
+			TagRegistry.item(identifier).values().forEach(item -> {
+				ItemTagTable.set(LuaValue.valueOf(identifier.toString()), LuaValue.valueOf(Registry.ITEM.getId(item).toString()));
+			});
+		});
+
+		LuaTable MasterTable = LuaValue.tableOf();
+		MasterTable.set("blocks", BlockTable);
+		MasterTable.set("items", ItemTable);
+		MasterTable.set("blocktags", BlockTagTable);
+		MasterTable.set("itemtags", ItemTagTable);
+
+		return MasterTable;
 	}
 
 }
