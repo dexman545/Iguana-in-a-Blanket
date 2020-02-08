@@ -11,24 +11,36 @@ import dex.iguanablanket.impl.IguanaEntityAttributes;
 import dex.iguanablanket.impl.ItemWeight;
 import dex.iguanablanket.impl.ServerReloadCallback;
 import dex.iguanablanket.mixin.EntityMixin;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.server.PlayerStream;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ElytraItem;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import org.aeonbits.owner.ConfigFactory;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.PrimitiveIterator;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class IguanaBlanket implements ModInitializer {
 	public static IguanaConfig cfg;
+	public static final Identifier IGUANA_CONFIG_PACKET_ID_WEIGHTS = new Identifier("iguana-blanket", "config_weights");
+	public static final Identifier IGUANA_CONFIG_PACKET_ID_STACKS = new Identifier("iguana-blanket", "config_stacks");
+
 
 	@Override
 	public void onInitialize() {
@@ -108,7 +120,38 @@ public class IguanaBlanket implements ModInitializer {
 		});
 
 		ServerReloadCallback.EVENT.register(t -> {
-			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), gen.genDefaultsTables());
+			HashMap<String, HashMap> syncData = LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), gen.genDefaultsTables());
+			Stream<ServerPlayerEntity> players = PlayerStream.all(t);
+
+			PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+			PacketByteBuf stacks = new PacketByteBuf(Unpooled.buffer());
+
+			CompoundTag x = new CompoundTag();
+			CompoundTag y = new CompoundTag();
+
+			((HashMap<String, Float>)(syncData.get("weights"))).forEach(x::putFloat);
+
+			((HashMap<String, Integer>)(syncData.get("stacksizes"))).forEach(y::putInt);
+
+
+			data.writeCompoundTag(x);
+			stacks.writeCompoundTag(y);
+
+			//send the data
+			players.forEach(serverPlayerEntity -> {
+				ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, IGUANA_CONFIG_PACKET_ID_WEIGHTS, data);
+				ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, IGUANA_CONFIG_PACKET_ID_STACKS, stacks);
+			});
+
+			/*weight.entrySet().forEach(integerFloatEntry -> {
+				Pair<Integer, Float> x = Pair.of(integerFloatEntry.getKey(), integerFloatEntry.getValue());
+				data.clear();
+				System.out.println(SerializationUtils.serialize(x).length);
+				data.writeBytes(SerializationUtils.serialize(x.toString()));
+				players.forEach(serverPlayerEntity -> {
+					ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, IGUANA_CONFIG_PACKET_ID_WEIGHTS, data);
+				});
+			});*/
 		});
 
 	}

@@ -23,8 +23,8 @@ public class DefaultConfigWriter {
             "    enchantmentsakesslowdownignorant = {} --map of block id -> enchant id. If the entity has this enchantment on armour, not slowed down by the block\n" +
             "}\n" +
             "\n" +
-            "--A variable to set the max weight of a stack, can be used or changed\n" +
-            "local maxStackWeight = 15\n" +
+            "--A variable to set the max weight of a stack, can be used or changed or ignored\n" +
+            "local maxStackWeight = 100 / 36\n" +
             "\n" +
             "--this function must exist and eb named as such. It takes in the table of items, blocks, item tags, and block tags\n" +
             "--it must return configTable or equivalent\n" +
@@ -49,14 +49,14 @@ public class DefaultConfigWriter {
             "function processItems(itable)\n" +
             "    for k, v in pairs(itable) do --k = item id; v = value\n" +
             "        configTable[\"itemstacksizes\"][k] = 32\n" +
-            "        configTable[\"itemweights\"][k] = 1.11\n" +
+            "        configTable[\"itemweights\"][k] = maxStackWeight / 32\n" +
             "    end\n" +
             "end\n" +
             "\n" +
             "function processBlocks(btable)\n" +
             "    for k, v in pairs(btable) do --k = block id; v = value\n" +
             "        configTable[\"blockstacksizes\"][k] = 32\n" +
-            "        configTable[\"blockweights\"][k] = 2.22\n" +
+            "        configTable[\"blockweights\"][k] = maxStackWeight / 32\n" +
             "    end\n" +
             "end\n" +
             "\n" +
@@ -68,7 +68,7 @@ public class DefaultConfigWriter {
             "        configTable[\"blockslowdownfactor\"][v] = 0\n" +
             "    end\n" +
             "    for k, v in pairs(bttable[\"minecraft:ice\"]) do\n" +
-            "        configTable[\"blockweights\"][v] = 5.2\n" +
+            "        configTable[\"blockweights\"][v] = maxStackWeight / 17\n" +
             "        configTable[\"blockstacksizes\"][v] = 17\n" +
             "        configTable[\"blockhardnessscale\"][v] = 0.5\n" +
             "        configTable[\"blockslowdownfactor\"][v] = 2\n" +

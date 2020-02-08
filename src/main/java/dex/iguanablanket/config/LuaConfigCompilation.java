@@ -1,5 +1,6 @@
 package dex.iguanablanket.config;
 
+import net.minecraft.util.registry.Registry;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -16,24 +17,25 @@ public class LuaConfigCompilation {
     public static HashMap<String, Integer> stacksizes = new HashMap<>();
     public static HashMap<String, Float> weights = new HashMap<>();
     public static HashMap<String, String> enchants = new HashMap<>();
+    public static HashMap<String, HashMap> syncedData = new HashMap<>();
 
     public static void updateMapsFloat(LuaTable table, HashMap<String, Float> map) {
+        LuaValue[] keys = table.checktable().keys();
         for (int i = 0; i < table.checktable().keyCount(); i++) {
-            LuaValue[] keys = table.checktable().keys();
             map.put(keys[i].toString(), table.get(keys[i]).tofloat());
         }
     }
 
     public static void updateMapsInt(LuaTable table, HashMap<String, Integer> map) {
+        LuaValue[] keys = table.checktable().keys();
         for (int i = 0; i < table.checktable().keyCount(); i++) {
-            LuaValue[] keys = table.checktable().keys();
             map.put(keys[i].toString(), table.get(keys[i]).toint());
         }
     }
 
     public static void updateMapsString(LuaTable table, HashMap<String, String> map) {
+        LuaValue[] keys = table.checktable().keys();
         for (int i = 0; i < table.checktable().keyCount(); i++) {
-            LuaValue[] keys = table.checktable().keys();
             map.put(keys[i].toString(), table.get(keys[i]).toString());
         }
     }
@@ -58,6 +60,9 @@ public class LuaConfigCompilation {
                 updateMapsFloat(b.get("blockslowdownfactor").checktable(), blockslowdown);
                 updateMapsFloat(b.get("blockhardnessscale").checktable(), blockhardness);
                 updateMapsString(b.get("enchantmentsakesslowdownignorant").checktable(), enchants);
+
+                syncedData.put("weights", weights);
+                syncedData.put("stacksizes", stacksizes);
 
             } catch (ScriptException e) {
                 System.out.println("Bad Script");
@@ -85,14 +90,16 @@ public class LuaConfigCompilation {
         }
     }
 
-    public static void threadedmain(final String script, LuaTable table) {
+    public static HashMap<String, HashMap> threadedmain(final String script, LuaTable table) {
         try {
             Thread thread = new Thread(new LuaConfigCompilation.Runner(script, table),"IguanaLuaConfigRunner");
             thread.start();
             thread.join();
             System.out.println("Completed Loading Iguana Config Data");
+            return syncedData;
         } catch ( Exception e ) {
             e.printStackTrace();
         }
+        return null;
     }
 }
