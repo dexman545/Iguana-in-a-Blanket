@@ -30,11 +30,12 @@ public class GenerateData {
 
 
     public LuaTable genDefaultsTables() {
-        String dest = FabricLoader.getInstance().getConfigDirectory().toString() + "/" + "iguanaIdDump.txt";
+        String dest = FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + "iguanaIdDump.txt";
         FileWriter o = null;
         try {
             o = new FileWriter(dest, false);
-            o.write("");
+            o.write("This is a dump of all ids iguana can handle. This file is overwritten on each world (re)load " +
+                    "\nThis data has the dame structure as the data passed to the lua file");
         } catch (IOException e) {
             e.printStackTrace();
         }

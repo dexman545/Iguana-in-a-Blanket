@@ -1,12 +1,14 @@
 package dex.iguanablanket.config;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class DefaultConfigWriter {
     public void writeDefaultConfig(String fileName) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, false));
+        File file = new File(fileName);
+        file.getParentFile().mkdirs();
+        //file.createNewFile();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
+
         writer.write(str);
         writer.close();
     }

@@ -39,7 +39,7 @@ public class IguanaBlanket implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		try {
-			(new DefaultConfigWriter()).writeDefaultConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/default.lua");
+			(new DefaultConfigWriter()).writeDefaultConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + "default.lua");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -110,7 +110,7 @@ public class IguanaBlanket implements ModInitializer {
 		GenerateData gen = new GenerateData();
 
 		ServerStartCallback.EVENT.register(minecraftServer -> {
-			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), gen.genDefaultsTables());
+			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + cfg.luaConfig(), gen.genDefaultsTables());
 		});
 
 		PlayerJoinCallback.EVENT.register(playerEntity -> {
@@ -120,7 +120,7 @@ public class IguanaBlanket implements ModInitializer {
 		});
 
 		ServerReloadCallback.EVENT.register(t -> {
-			HashMap<String, HashMap> syncData = LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), gen.genDefaultsTables());
+			HashMap<String, HashMap> syncData = LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + cfg.luaConfig(), gen.genDefaultsTables());
 			Stream<ServerPlayerEntity> players = PlayerStream.all(t);
 
 			//send the data
