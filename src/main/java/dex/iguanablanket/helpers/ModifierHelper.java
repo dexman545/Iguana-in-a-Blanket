@@ -1,5 +1,7 @@
-package dex.iguanablanket;
+package dex.iguanablanket.helpers;
 
+import dex.iguanablanket.IguanaBlanket;
+import dex.iguanablanket.impl.IguanaEntityAttributes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;

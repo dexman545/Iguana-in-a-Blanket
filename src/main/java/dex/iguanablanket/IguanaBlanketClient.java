@@ -1,21 +1,24 @@
 package dex.iguanablanket;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import dex.iguanablanket.config.LuaConfigCompilation;
+import dex.iguanablanket.impl.IguanaEntityAttributes;
 import dex.iguanablanket.mixin.EntityMixin;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import spinnery.util.InGameHudScreen;
 import spinnery.widget.*;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class IguanaBlanketClient implements ClientModInitializer {
 	static String modid = "iguana-blanket";
@@ -73,12 +76,55 @@ public class IguanaBlanketClient implements ClientModInitializer {
 				}
 			}
 
-			int value = (int) Math.round(4 * (Math.min(weight, maxWeight) / maxWeight));
+			int value = (int) Math.floor(4 * (Math.min(weight, maxWeight) / maxWeight));
 
 			encumbrance.setCurrentImage(value);
 			encumbrance.setHidden(!IguanaBlanket.cfg.displayEncumbranceIcon());
 
 
 		});
+
+		//Listen for config packet from server
+		ClientSidePacketRegistry.INSTANCE.register(IguanaBlanket.IGUANA_CONFIG_PACKET_ID_WEIGHTS,
+				((packetContext, packetByteBuf) -> {
+					CompoundTag x = packetByteBuf.readCompoundTag();
+					Gson gson = new Gson();
+					Type m = new TypeToken<HashMap<String, Float>>() {}.getType();
+					HashMap<String, Float> k = gson.fromJson(Objects.requireNonNull(x).asString(), m);
+
+					packetContext.getTaskQueue().execute(() -> {
+						try {
+							//clear client data
+							LuaConfigCompilation.weights.clear();
+
+							LuaConfigCompilation.weights.putAll(k);
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+					});
+				}));
+
+		ClientSidePacketRegistry.INSTANCE.register(IguanaBlanket.IGUANA_CONFIG_PACKET_ID_STACKS,
+				((packetContext, packetByteBuf) -> {
+					CompoundTag x = packetByteBuf.readCompoundTag();
+					Gson gson = new Gson();
+					Type m = new TypeToken<HashMap<String, Integer>>() {}.getType();
+					HashMap<String, Integer> k = gson.fromJson(Objects.requireNonNull(x).asString(), m);
+
+					packetContext.getTaskQueue().execute(() -> {
+						try {
+							//clear client data
+							LuaConfigCompilation.stacksizes.clear();
+
+							LuaConfigCompilation.stacksizes.putAll(k);
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+					});
+				}));
 	}
 }
