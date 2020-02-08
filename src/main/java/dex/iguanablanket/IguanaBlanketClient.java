@@ -96,7 +96,7 @@ public class IguanaBlanketClient implements ClientModInitializer {
 						try {
 							//clear client data
 							LuaConfigCompilation.weights.clear();
-							
+
 							LuaConfigCompilation.weights.putAll(k);
 
 						} catch (Exception e) {

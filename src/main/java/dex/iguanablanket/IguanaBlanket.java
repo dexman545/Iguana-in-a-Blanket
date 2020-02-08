@@ -6,10 +6,8 @@ import dex.iguanablanket.config.IguanaConfig;
 import dex.iguanablanket.config.LuaConfigCompilation;
 import dex.iguanablanket.helpers.Data;
 import dex.iguanablanket.helpers.ModifierHelper;
-import dex.iguanablanket.impl.EntityHealthChangeCallback;
-import dex.iguanablanket.impl.IguanaEntityAttributes;
-import dex.iguanablanket.impl.ItemWeight;
-import dex.iguanablanket.impl.ServerReloadCallback;
+import dex.iguanablanket.helpers.SyncHelper;
+import dex.iguanablanket.impl.*;
 import dex.iguanablanket.mixin.EntityMixin;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
@@ -119,39 +117,20 @@ public class IguanaBlanket implements ModInitializer {
 			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), gen.genDefaultsTables());
 		});
 
+		PlayerJoinCallback.EVENT.register(playerEntity -> {
+			SyncHelper.syncData(playerEntity, LuaConfigCompilation.syncedData);
+
+			return ActionResult.PASS;
+		});
+
 		ServerReloadCallback.EVENT.register(t -> {
 			HashMap<String, HashMap> syncData = LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/" + cfg.luaConfig(), gen.genDefaultsTables());
 			Stream<ServerPlayerEntity> players = PlayerStream.all(t);
 
-			PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-			PacketByteBuf stacks = new PacketByteBuf(Unpooled.buffer());
-
-			CompoundTag x = new CompoundTag();
-			CompoundTag y = new CompoundTag();
-
-			((HashMap<String, Float>)(syncData.get("weights"))).forEach(x::putFloat);
-
-			((HashMap<String, Integer>)(syncData.get("stacksizes"))).forEach(y::putInt);
-
-
-			data.writeCompoundTag(x);
-			stacks.writeCompoundTag(y);
-
 			//send the data
 			players.forEach(serverPlayerEntity -> {
-				ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, IGUANA_CONFIG_PACKET_ID_WEIGHTS, data);
-				ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, IGUANA_CONFIG_PACKET_ID_STACKS, stacks);
+				SyncHelper.syncData(serverPlayerEntity, syncData);
 			});
-
-			/*weight.entrySet().forEach(integerFloatEntry -> {
-				Pair<Integer, Float> x = Pair.of(integerFloatEntry.getKey(), integerFloatEntry.getValue());
-				data.clear();
-				System.out.println(SerializationUtils.serialize(x).length);
-				data.writeBytes(SerializationUtils.serialize(x.toString()));
-				players.forEach(serverPlayerEntity -> {
-					ServerSidePacketRegistry.INSTANCE.sendToPlayer(serverPlayerEntity, IGUANA_CONFIG_PACKET_ID_WEIGHTS, data);
-				});
-			});*/
 		});
 
 	}

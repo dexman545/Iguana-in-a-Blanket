@@ -16,7 +16,8 @@
     "LivingEntityMixin",
     "BlockMixin",
     "EntityMixin",
-    "MinecraftServerMixin"
+    "MinecraftServerMixin",
+    "PlayerManagerMixin"
   ],
   "client": [
     "GameRendererMixin",

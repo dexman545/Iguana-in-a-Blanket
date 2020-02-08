@@ -24,7 +24,7 @@ public class DefaultConfigWriter {
             "}\n" +
             "\n" +
             "--A variable to set the max weight of a stack, can be used or changed or ignored\n" +
-            "local maxStackWeight = 100 / 36\n" +
+            "local maxStackWeight = 100 / (2*36)\n" +
             "\n" +
             "--this function must exist and eb named as such. It takes in the table of items, blocks, item tags, and block tags\n" +
             "--it must return configTable or equivalent\n" +
