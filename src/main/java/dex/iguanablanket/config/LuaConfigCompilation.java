@@ -60,6 +60,11 @@ public class LuaConfigCompilation {
                 updateMapsFloat(b.get("blockslowdownfactor").checktable(), blockslowdown);
                 updateMapsFloat(b.get("blockhardnessscale").checktable(), blockhardness);
                 updateMapsString(b.get("enchantmentsakesslowdownignorant").checktable(), enchants);
+                stacksizes.forEach((s, integer) -> {
+                    if (integer <= 0) {
+                        stacksizes.put(s, 1);
+                    }
+                });
 
                 syncedData.put("weights", weights);
                 syncedData.put("stacksizes", stacksizes);

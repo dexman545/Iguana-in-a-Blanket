@@ -21,7 +21,7 @@ public abstract class ItemStackMixin implements ItemWeight {
 	//Max stack size
 	@Inject(at=@At("HEAD"), method = "getMaxCount()I", cancellable = true)
 	public void getMaxCount(CallbackInfoReturnable<Integer> cir) {
-		cir.setReturnValue(LuaConfigCompilation.stacksizes.getOrDefault(Registry.ITEM.getId(((ItemStack) (Object) this).getItem()).toString(), 0));
+		cir.setReturnValue(LuaConfigCompilation.stacksizes.getOrDefault(Registry.ITEM.getId(((ItemStack) (Object) this).getItem()).toString(), 1));
 
 	}
 
