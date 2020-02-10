@@ -1,5 +1,6 @@
 package dex.iguanablanket.config;
 
+import dex.iguanablanket.IguanaBlanket;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.tag.BlockTags;
@@ -9,6 +10,7 @@ import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,7 +25,7 @@ public class GenerateData {
                 writer.flush();
                 //writer.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                IguanaBlanket.logger.catching(e);
             }
         }
     }
@@ -37,7 +39,7 @@ public class GenerateData {
             o.write("This is a dump of all ids iguana can handle. This file is overwritten on each world (re)load " +
                     "\nThis data has the dame structure as the data passed to the lua file");
         } catch (IOException e) {
-            e.printStackTrace();
+            IguanaBlanket.logger.catching(e);
         }
 
         LuaTable BlockTable = LuaValue.tableOf();
@@ -105,7 +107,7 @@ public class GenerateData {
             try {
                 o.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                IguanaBlanket.logger.catching(e);
             }
         }
 

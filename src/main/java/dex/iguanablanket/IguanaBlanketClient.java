@@ -100,7 +100,7 @@ public class IguanaBlanketClient implements ClientModInitializer {
 							LuaConfigCompilation.weights.putAll(k);
 
 						} catch (Exception e) {
-							e.printStackTrace();
+							IguanaBlanket.logger.catching(e);
 						}
 
 					});
@@ -121,7 +121,7 @@ public class IguanaBlanketClient implements ClientModInitializer {
 							LuaConfigCompilation.stacksizes.putAll(k);
 
 						} catch (Exception e) {
-							e.printStackTrace();
+							IguanaBlanket.logger.catching(e);
 						}
 
 					});

@@ -1,5 +1,6 @@
 package dex.iguanablanket.config;
 
+import dex.iguanablanket.IguanaBlanket;
 import net.minecraft.util.registry.Registry;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
@@ -70,11 +71,12 @@ public class LuaConfigCompilation {
                 syncedData.put("stacksizes", stacksizes);
 
             } catch (ScriptException e) {
-                System.out.println("Bad Script");
-                e.printStackTrace();
+                IguanaBlanket.logger.error("Iguana was passed a bad lua script!");
+                IguanaBlanket.logger.catching(e);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            IguanaBlanket.logger.error("iguana could not find the specified script file!");
+            IguanaBlanket.logger.catching(e);
         }
 
     }
@@ -90,7 +92,7 @@ public class LuaConfigCompilation {
             try {
                 getConfig(script1, table);
             } catch (Exception e) {
-                e.printStackTrace();
+                IguanaBlanket.logger.catching(e);
             }
         }
     }
@@ -100,10 +102,10 @@ public class LuaConfigCompilation {
             Thread thread = new Thread(new LuaConfigCompilation.Runner(script, table),"IguanaLuaConfigRunner");
             thread.start();
             thread.join();
-            System.out.println("Completed Loading Iguana Config Data");
+            IguanaBlanket.logger.info("Completed Loading Iguana Config Data");
             return syncedData;
         } catch ( Exception e ) {
-            e.printStackTrace();
+            IguanaBlanket.logger.catching(e);
         }
         return null;
     }

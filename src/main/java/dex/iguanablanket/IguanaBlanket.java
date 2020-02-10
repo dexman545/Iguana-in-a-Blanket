@@ -22,6 +22,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.aeonbits.owner.ConfigFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,14 +37,15 @@ public class IguanaBlanket implements ModInitializer {
 	public static IguanaConfig cfg;
 	public static final Identifier IGUANA_CONFIG_PACKET_ID_WEIGHTS = new Identifier("iguana-blanket", "config_weights");
 	public static final Identifier IGUANA_CONFIG_PACKET_ID_STACKS = new Identifier("iguana-blanket", "config_stacks");
-
+	public static final Logger logger = LogManager.getLogger(IguanaBlanketClient.modid);
 
 	@Override
 	public void onInitialize() {
+
 		try {
 			(new DefaultConfigWriter()).writeDefaultConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + "default.lua");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.catching(e);
 		}
 
 		//configuration
@@ -54,7 +58,7 @@ public class IguanaBlanket implements ModInitializer {
 			cfg.store(new FileOutputStream(config), "Iguana in a Blanket Configuration File" +
 					"\nNote: Default options only effect new entities. Options will reload after ~5 seconds from save.");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.catching(e);
 		}
 
 		ServerTickCallback.EVENT.register(t -> {
