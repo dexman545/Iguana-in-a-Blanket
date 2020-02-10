@@ -105,6 +105,7 @@ public class GenerateData {
 
         if (o != null) {
             try {
+                o.flush();
                 o.close();
             } catch (IOException e) {
                 IguanaBlanket.logger.catching(e);
