@@ -6,6 +6,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldView;
 
 import java.util.Optional;
@@ -17,7 +18,7 @@ public abstract class RespawnHelpers {
         int j = pos.getY();
         int k = pos.getZ();
 
-        for(int l = 0; l <= 1; ++l) {
+        for(int l = 0; l <= 10; ++l) {
             int m = i - direction.getOffsetX() * l - 1;
             int n = k - direction.getOffsetZ() * l - 1;
             int o = m + 2;
@@ -25,14 +26,10 @@ public abstract class RespawnHelpers {
 
             for(int q = m; q <= o; ++q) {
                 for(int r = n; r <= p; ++r) {
-                    BlockPos blockPos = new BlockPos(q, j, r);
+                    BlockPos blockPos = worldView.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(q, j, r));
                     Optional<Vec3d> optional = canWakeUpAt(type, worldView, blockPos);
                     if (optional.isPresent()) {
-                        if (index <= 0) {
-                            return optional;
-                        }
-
-                        --index;
+                        return optional;
                     }
                 }
             }
