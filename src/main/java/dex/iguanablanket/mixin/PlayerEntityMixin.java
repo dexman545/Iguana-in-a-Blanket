@@ -23,15 +23,12 @@ public class PlayerEntityMixin {
     private static void respawnLoc(WorldView world, BlockPos spawnPos, boolean allowNonBed, CallbackInfoReturnable<Optional<Vec3d>> cir) {
         Optional<Vec3d> original = cir.getReturnValue();
         double range = IguanaBlanket.cfg.randomRespawnRange();
-        System.out.println(original);
         original.ifPresent(vec3d -> {
             Vec3d v = vec3d.add(range * ThreadLocalRandom.current().nextGaussian(), range * ThreadLocalRandom.current().nextGaussian(), range * ThreadLocalRandom.current().nextGaussian());
-
 
             Optional<Vec3d> f = RespawnHelpers.findWakeUpPosition(EntityType.PLAYER, world, new BlockPos(v), 10);
             f.ifPresent(vec3d1 -> {
                 BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(vec3d1));
-                System.out.println(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(v)).getY());
                 cir.setReturnValue(Optional.of(new Vec3d(pos)));
             });
         });
