@@ -1,11 +1,14 @@
 package dex.iguanablanket.mixin;
 
+import dex.iguanablanket.IguanaBlanket;
 import dex.iguanablanket.impl.EntityHealthChangeCallback;
 import dex.iguanablanket.impl.IguanaEntityAttributes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ElytraItem;
 import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,9 +45,9 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    /*@Inject(method = "tick()V", at = @At("TAIL"))
+    @Inject(method = "tick()V", at = @At("TAIL"))
     private void modifyFlight(CallbackInfo ci) {
-        if (!(((LivingEntity) (Object) this).world.isClient)) {
+        if ((!(((LivingEntity) (Object) this).world.isClient)) && IguanaBlanket.cfg.doesWeightEffectElytra()) {
             double weight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.WEIGHT).getValue();
             double maxWeight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
             double scale = (weight + maxWeight) / maxWeight;
@@ -53,18 +56,16 @@ public abstract class LivingEntityMixin extends Entity {
                 if (weight > maxWeight) {
                     ((LivingEntity) (Object) this).getArmorItems().forEach(t -> {
                         if (t.getItem() instanceof ElytraItem) {
-                            System.out.println("m");
-                            t.setDamage(431);
+                            t.setDamage(t.getMaxDamage() - 1);
                         }
                     });
                 } else {
-                    System.out.println(scale);
-                    ((LivingEntity) (Object) this).setVelocity(((LivingEntity) (Object) this).getVelocity().multiply(scale, scale, scale));
+                    //for making entitied fall faster even with elytra when heavy
                 }
             }
         }
 
-    }*/
+    }
 
 
     public LivingEntityMixin(EntityType<?> entityType_1, World world_1) {

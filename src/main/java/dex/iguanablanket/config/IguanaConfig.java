@@ -32,4 +32,13 @@ public interface IguanaConfig extends Config, Reloadable, Accessible {
     @DefaultValue("0.1")
     double fovClamp();
 
+    @DefaultValue("true")
+    boolean destroyBedRespawn();
+
+    @DefaultValue("11.2")
+    double randomRespawnRange();
+
+    @DefaultValue("true")
+    boolean doesWeightEffectElytra();
+
 }
