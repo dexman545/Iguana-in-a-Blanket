@@ -1,7 +1,6 @@
 package dex.iguanablanket.config;
 
 import dex.iguanablanket.IguanaBlanket;
-import net.minecraft.util.registry.Registry;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -84,10 +83,12 @@ public class LuaConfigCompilation {
     static class Runner implements Runnable {
         final String script1;
         final LuaTable table;
+
         Runner(String script1, LuaTable table) {
             this.script1 = script1;
             this.table = table;
         }
+
         public void run() {
             try {
                 getConfig(script1, table);
