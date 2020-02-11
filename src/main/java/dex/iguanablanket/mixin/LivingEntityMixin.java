@@ -8,8 +8,12 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ElytraItem;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -85,6 +89,18 @@ public abstract class LivingEntityMixin extends Entity {
         if (result == ActionResult.FAIL) {
             ci.cancel();
         }
+    }
+
+    @Inject(method = "swimUpward(Lnet/minecraft/tag/Tag;)V", at = @At("TAIL"), cancellable = true)
+    private void nerfSwimUpward(Tag<Fluid> fluid, CallbackInfo ci) {
+        if (IguanaBlanket.cfg.doesWeightEffectSwimming()) {
+            double weight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.WEIGHT).getValue();
+            double maxWeight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
+            double scale = ((weight + maxWeight) / maxWeight) - 1;
+            Vec3d v = ((LivingEntity) (Object) this).getVelocity();
+            ((LivingEntity) (Object) this).setVelocity(v.add(0, -scale*v.y*1.3, 0));
+        }
+
     }
 
 }

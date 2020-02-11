@@ -41,4 +41,7 @@ public interface IguanaConfig extends Config, Reloadable, Accessible {
     @DefaultValue("true")
     boolean doesWeightEffectElytra();
 
+    @DefaultValue("true")
+    boolean doesWeightEffectSwimming();
+
 }
