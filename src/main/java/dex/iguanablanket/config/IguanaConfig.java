@@ -11,7 +11,7 @@ public interface IguanaConfig extends Config, Reloadable, Accessible {
     @DefaultValue("true")
     boolean displayEncumbranceIcon();
 
-    @DefaultValue("100.0")
+    @DefaultValue("200.0")
     double defaultEntityMaxWeight();
 
     @DefaultValue("1.0")
