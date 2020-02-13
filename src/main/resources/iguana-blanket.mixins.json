@@ -10,7 +10,8 @@
     "EntityMixin",
     "MinecraftServerMixin",
     "PlayerManagerMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "ItemEntityMixin"
   ],
   "server": [
     "BlockStateMixin",
