@@ -1,5 +1,6 @@
 package dex.iguanablanket.mixin;
 
+import dev.emi.iteminventory.api.ItemInventory;
 import dex.iguanablanket.impl.ItemWeight;
 import dex.iguanablanket.config.LuaConfigCompilation;
 import net.minecraft.block.Block;
@@ -13,6 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Mixin(ItemStack.class)
@@ -30,12 +33,16 @@ public abstract class ItemStackMixin implements ItemWeight {
 	public float getWeight() {
 		AtomicReference<Float> sum = new AtomicReference<>(0f);
 		sum.updateAndGet(v -> v + ((ItemWeight) (Object) this).getSingleWeight());
-		if (Block.getBlockFromItem(((ItemStack) (Object) this).getItem()) instanceof ShulkerBoxBlock) {
-			DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(27, ItemStack.EMPTY);
-			Inventories.fromTag(((ItemStack) (Object) this).getOrCreateTag().getCompound("BlockEntityTag"), defaultedList);
-			defaultedList.forEach(stack -> {
-				sum.updateAndGet(v -> v + (cfg.shulkerboxWeightReductionFactor() * ((ItemWeight) (Object) stack).getSingleWeight()));
-			});
+
+		if (((ItemStack) (Object) this).getItem() instanceof ItemInventory) {
+			List<ItemStack> innerStacks = new ArrayList<ItemStack>();
+			int size = ((ItemInventory) ((ItemStack) (Object) this).getItem()).getInvSize(((ItemStack) (Object) this));
+			ItemInventory inv = (ItemInventory) ((ItemStack) (Object) this).getItem();
+
+			for (int i = 0; i < size; i++) {
+				int finalI = i;
+				sum.updateAndGet(v -> v + (cfg.shulkerboxWeightReductionFactor() * ((ItemWeight) (Object) inv.getStack(((ItemStack) (Object) this), finalI)).getWeight()));
+			}
 		}
 
 		return sum.get();

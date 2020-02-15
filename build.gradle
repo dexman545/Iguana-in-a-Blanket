@@ -40,6 +40,8 @@ dependencies {
 	modCompile group: 'org.luaj', name: 'luaj-jse', version: '3.0.1'
 	include group: 'org.luaj', name: 'luaj-jse', version: '3.0.1'
 
+	include "com.github.emilyploszaj:item-inventory:v1.1.0"
+	modCompile "com.github.emilyploszaj:item-inventory:v1.1.0"
 
 }
 
