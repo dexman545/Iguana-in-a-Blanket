@@ -60,7 +60,8 @@ public class PlayerEntityMixin {
             /*Vec3d vel = new Vec3d(((PlayerEntity) (Object) this).getX() - ((PlayerEntity) (Object) this).prevX,
                 ((PlayerEntity) (Object) this).getY() - ((PlayerEntity) (Object) this).prevY,
                 ((PlayerEntity) (Object) this).getZ() - ((PlayerEntity) (Object) this).prevZ);*/
-            Vec3d v = new Vec3d((double) (-k * j * 0.3F) + Math.cos((double) m) * (double) n, (double) (-g * 0.3F + 0.1F), (double) (l * j * 0.3F) + Math.sin((double) m) * (double) n);
+            //v.y = (double) (-g * 0.3F + 0.1F)
+            Vec3d v = new Vec3d((double) (-k * j * 0.3F) + Math.cos((double) m) * (double) n, (double) -g + 0.1F, (double) (l * j * 0.3F) + Math.sin((double) m) * (double) n);
             v = v.multiply(0.6); //correct for large numbers
             double maxWeight = ((PlayerEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
             v = v.add(v.multiply((maxWeight - Math.min(maxWeight, 10*((ItemWeight) (Object) stack).getWeight())) / maxWeight));
