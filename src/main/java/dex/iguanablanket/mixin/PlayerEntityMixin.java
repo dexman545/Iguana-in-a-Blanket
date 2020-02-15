@@ -49,7 +49,6 @@ public class PlayerEntityMixin {
             locals = LocalCapture.CAPTURE_FAILSOFT)
     private void modifyDropItem(ItemStack stack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir, double d, ItemEntity itemEntity) {
         if (IguanaBlanket.playerDropPower.getOrDefault(((ServerPlayerEntity)(PlayerEntity)(Object)this).getUuid(), 0f) > 0f) {
-            float f = 0.3F;
             Random random = ThreadLocalRandom.current();
             float g = MathHelper.sin(((PlayerEntity)(Object)this).pitch * 0.017453292F);
             float j = MathHelper.cos(((PlayerEntity)(Object)this).pitch * 0.017453292F);
@@ -61,7 +60,6 @@ public class PlayerEntityMixin {
         /*Vec3d vel = new Vec3d(((PlayerEntity) (Object) this).getX() - ((PlayerEntity) (Object) this).prevX,
                 ((PlayerEntity) (Object) this).getY() - ((PlayerEntity) (Object) this).prevY,
                 ((PlayerEntity) (Object) this).getZ() - ((PlayerEntity) (Object) this).prevZ);*/
-            //Vec3d v = new Vec3d((double) (-k * j * 0.3F) + Math.cos((double) m) * (double) n, (double) (-g * 0.3F + 0.1F + (random.nextGaussian() - random.nextGaussian()) * 0.1F), (double) (l * j * 0.3F) + Math.sin((double) m) * (double) n);
             Vec3d v = new Vec3d((double) (-k * j * 0.3F) + Math.cos((double) m) * (double) n, (double) (-g * 0.3F + 0.1F), (double) (l * j * 0.3F) + Math.sin((double) m) * (double) n);
             v = v.multiply(0.6); //correct for large numbers
             double maxWeight = ((PlayerEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();

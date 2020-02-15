@@ -104,9 +104,7 @@ public class IguanaBlanketClient implements ClientModInitializer {
 					power = Math.max(power, 1);
 					PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
 					data.writeFloat(power);
-					//player.networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.DROP_ITEM, BlockPos.ORIGIN, Direction.DOWN));
 					ClientSidePacketRegistry.INSTANCE.sendToServer(IguanaBlanket.IGUANA_ITEM_POWERED_THROW, data);
-					//IguanaBlanket.playerDropPower.put(player.getUuid(), power);
 					power = 0f;
 				}
 			}
