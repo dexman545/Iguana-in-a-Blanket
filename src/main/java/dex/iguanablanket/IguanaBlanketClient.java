@@ -21,6 +21,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.packet.PlayerActionC2SPacket;
 import net.minecraft.server.network.packet.PlayerInputC2SPacket;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
@@ -44,6 +46,9 @@ public class IguanaBlanketClient implements ClientModInitializer {
 	WDynamicImage encumbrance = new WDynamicImage(WPosition.of(WType.ANCHORED, 0, 0, 0, mainInterface),
 			WSize.of(15, 15), mainInterface);
 
+	WDynamicText toss = new WDynamicText(WPosition.of(WType.ANCHORED, 0, 20, 0, mainInterface),
+			WSize.of(0, 0), mainInterface);
+
 
 	private void genTextures() {
 		for (int i = 0; i < 5; i++) {
@@ -65,6 +70,8 @@ public class IguanaBlanketClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		toss.setHidden(true);
+		toss.setLabelShadow(false);
 
 		genTextures();
 
@@ -73,6 +80,7 @@ public class IguanaBlanketClient implements ClientModInitializer {
 			holder.add(mainInterface);
 
 			mainInterface.add(encumbrance);
+			mainInterface.add(toss);
 		});
 
 		ClientTickCallback.EVENT.register(t -> {
@@ -94,10 +102,11 @@ public class IguanaBlanketClient implements ClientModInitializer {
 			encumbrance.setCurrentImage(value);
 			encumbrance.setHidden(!IguanaBlanket.cfg.displayEncumbranceIcon());
 
-
 			if (MinecraftClient.getInstance() != null) {
-				if ((MinecraftClient.getInstance().options.keyDrop.isPressed() || MinecraftClient.getInstance().options.keyDrop.wasPressed())) {
+				if ((MinecraftClient.getInstance().options.keyDrop.isPressed() || MinecraftClient.getInstance().options.keyDrop.wasPressed()) && !player.getMainHandStack().equals(ItemStack.EMPTY)) {
 					power++;
+					toss.setHidden(false);
+					toss.setLabel(new LiteralText(String.valueOf(Math.max(1, Math.min(power / 4, IguanaBlanket.cfg.maxThrowFactor())))).formatted(Formatting.WHITE));
 				} else if (power != 0) {
 					power = power / 4;
 					power = Math.min(power, IguanaBlanket.cfg.maxThrowFactor());
@@ -106,8 +115,11 @@ public class IguanaBlanketClient implements ClientModInitializer {
 					data.writeFloat(power);
 					ClientSidePacketRegistry.INSTANCE.sendToServer(IguanaBlanket.IGUANA_ITEM_POWERED_THROW, data);
 					power = 0f;
+					toss.setHidden(true);
 				}
 			}
+
+
 
 
 		});

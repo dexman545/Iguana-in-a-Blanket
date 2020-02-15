@@ -148,7 +148,6 @@ public class IguanaBlanket implements ModInitializer {
 					playerDropPower.put(context.getPlayer().getUuid(), Math.min(power, cfg.maxThrowFactor()));
 					context.getPlayer().dropSelectedItem(false);
 				}
-				logger.info(power);
 			});
 		});
 

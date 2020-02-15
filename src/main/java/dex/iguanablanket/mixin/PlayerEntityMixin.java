@@ -57,7 +57,7 @@ public class PlayerEntityMixin {
             float m = 0;//(float) (random.nextGaussian() * .2831855F);
             float n = 0;//(float) (0.02F * random.nextGaussian());
             float power = IguanaBlanket.playerDropPower.get(((ServerPlayerEntity)(PlayerEntity)(Object)this).getUuid());
-        /*Vec3d vel = new Vec3d(((PlayerEntity) (Object) this).getX() - ((PlayerEntity) (Object) this).prevX,
+            /*Vec3d vel = new Vec3d(((PlayerEntity) (Object) this).getX() - ((PlayerEntity) (Object) this).prevX,
                 ((PlayerEntity) (Object) this).getY() - ((PlayerEntity) (Object) this).prevY,
                 ((PlayerEntity) (Object) this).getZ() - ((PlayerEntity) (Object) this).prevZ);*/
             Vec3d v = new Vec3d((double) (-k * j * 0.3F) + Math.cos((double) m) * (double) n, (double) (-g * 0.3F + 0.1F), (double) (l * j * 0.3F) + Math.sin((double) m) * (double) n);
