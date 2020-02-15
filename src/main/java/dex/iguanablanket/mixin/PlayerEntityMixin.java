@@ -65,7 +65,7 @@ public class PlayerEntityMixin {
             v = v.multiply(0.6); //correct for large numbers
             double maxWeight = ((PlayerEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
             v = v.add(v.multiply((maxWeight - Math.min(maxWeight, 10*((ItemWeight) (Object) stack).getWeight())) / maxWeight));
-            itemEntity.setVelocity(v.multiply(power));
+            itemEntity.setVelocity(v.multiply(power, 1, power));
             IguanaBlanket.playerDropPower.put(((ServerPlayerEntity)(PlayerEntity)(Object)this).getUuid(), 0f);
         }
     }
