@@ -27,8 +27,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import spinnery.util.InGameHudScreen;
+import org.apache.commons.lang3.mutable.MutableFloat;
+import spinnery.client.InGameHudScreen;
+import spinnery.common.BaseContainer;
 import spinnery.widget.*;
+import spinnery.widget.api.Position;
+import spinnery.widget.api.Size;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -39,15 +43,17 @@ public class IguanaBlanketClient implements ClientModInitializer {
 	public static float power = 0;
 
 	// WInterface
-	WInterface mainInterface = new WInterface(WPosition.of(WType.FREE, 8, 8, 0));
+	WInterface mainInterface = new WInterface();
 
 	Identifier[] textures = new Identifier[5];
 
-	WDynamicImage encumbrance = new WDynamicImage(WPosition.of(WType.ANCHORED, 0, 0, 0, mainInterface),
-			WSize.of(15, 15), mainInterface);
+	WDynamicImage encumbrance = new WDynamicImage();
 
-	WDynamicText toss = new WDynamicText(WPosition.of(WType.ANCHORED, 0, 20, 0, mainInterface),
-			WSize.of(0, 0), mainInterface);
+	WHorizontalBar toss = new WHorizontalBar();
+
+	//WDynamicImage encumbrance = new WDynamicImage(Position.of(0, 0, 0, mainInterface), Size.of(15, 15), mainInterface);
+
+	//WTextArea toss = new WDynamicText(WPosition.of(WType.ANCHORED, 0, 20, 0, mainInterface), Size.of(0, 0), mainInterface);
 
 
 	private void genTextures() {
@@ -71,16 +77,20 @@ public class IguanaBlanketClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		toss.setHidden(true);
-		toss.setLabelShadow(false);
 
 		genTextures();
 
 		InGameHudScreen.addOnInitialize(() -> {
-			WInterfaceHolder holder = InGameHudScreen.getHolder();
-			holder.add(mainInterface);
+			WInterface x = InGameHudScreen.getInterface();
+			encumbrance.setSize(Size.of(15, 15));
+			encumbrance.setPosition(Position.of(0,0,0));
+			x.add(encumbrance);
 
-			mainInterface.add(encumbrance);
-			mainInterface.add(toss);
+			toss.setSize(Size.of(50, 10));
+			toss.setPosition(Position.of(0,30,0));
+			toss.setLimit(new MutableFloat(IguanaBlanket.cfg.maxThrowFactor()));
+			x.add(toss);
+
 		});
 
 		ClientTickCallback.EVENT.register(t -> {
@@ -106,7 +116,9 @@ public class IguanaBlanketClient implements ClientModInitializer {
 				if ((MinecraftClient.getInstance().options.keyDrop.isPressed() || MinecraftClient.getInstance().options.keyDrop.wasPressed()) && !player.getMainHandStack().equals(ItemStack.EMPTY)) {
 					power++;
 					toss.setHidden(false);
-					toss.setLabel(new LiteralText(String.valueOf(Math.max(1, Math.min(power / 4, IguanaBlanket.cfg.maxThrowFactor())))).formatted(Formatting.WHITE));
+					toss.setProgress(new MutableFloat(Math.max(1, Math.min(power / 4, IguanaBlanket.cfg.maxThrowFactor()))));
+
+					//toss.setLabel(new LiteralText(String.valueOf(Math.max(1, Math.min(power / 4, IguanaBlanket.cfg.maxThrowFactor())))).formatted(Formatting.WHITE));
 				} else if (power != 0) {
 					power = power / 4;
 					power = Math.min(power, IguanaBlanket.cfg.maxThrowFactor());
