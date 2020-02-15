@@ -71,7 +71,7 @@ public class PlayerEntityMixin {
 
     @Inject(at = @At("HEAD"), method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;", cancellable = true)
     private void cancelItemDrop(ItemStack stack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
-        if ((IguanaBlanket.playerDropPower.getOrDefault(((ServerPlayerEntity)(PlayerEntity)(Object)this).getUuid(), 0f) < 1f)) {
+        if (((PlayerEntity) (Object) this).world.isClient && (IguanaBlanket.playerDropPower.getOrDefault(((PlayerEntity)(Object)this).getUuid(), 0f) < 1f)) {
             cir.cancel();
         }
     }

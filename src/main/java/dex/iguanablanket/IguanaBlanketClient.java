@@ -58,10 +58,10 @@ public class IguanaBlanketClient implements ClientModInitializer {
 		/*
 		Image translation:
 		轻 light 0
-		侐 immobile 4
-		大 heavy 3
-		难 difficult 2
 		羽 feather 1
+		难 difficult 2
+		大 heavy 3
+		侐 immobile 4
 		*/
 
 		encumbrance.setTextures(textures);
@@ -166,5 +166,6 @@ public class IguanaBlanketClient implements ClientModInitializer {
 
 					});
 				}));
+
 	}
 }

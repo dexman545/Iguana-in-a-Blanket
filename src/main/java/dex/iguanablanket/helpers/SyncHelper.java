@@ -34,8 +34,8 @@ public abstract class SyncHelper {
             ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerEntity, IguanaBlanket.IGUANA_CONFIG_PACKET_ID_WEIGHTS, data);
         } else {
             System.out.println(playerEntity.getDisplayName().asString() + " does not accept data from iguana");
-            ((ServerPlayerEntity)playerEntity).networkHandler.disconnect(new LiteralText("This server uses Iguana in a Blanket - " +
-                    "\n\nDue to desync reasons you are not allowed to connect until you install it").formatted(Formatting.UNDERLINE).formatted(Formatting.RED));
+            //((ServerPlayerEntity)playerEntity).networkHandler.disconnect(new LiteralText("This server uses Iguana in a Blanket - " +
+            //        "\n\nDue to desync reasons you are not allowed to connect until you install it").formatted(Formatting.UNDERLINE).formatted(Formatting.RED));
         }
 
     }
