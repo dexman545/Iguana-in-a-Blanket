@@ -44,4 +44,7 @@ public interface IguanaConfig extends Config, Reloadable, Accessible {
     @DefaultValue("true")
     boolean doesWeightEffectSwimming();
 
+    @DefaultValue("10")
+    float maxThrowFactor();
+
 }

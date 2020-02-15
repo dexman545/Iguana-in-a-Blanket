@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -47,17 +48,33 @@ public class PlayerEntityMixin {
             method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;",
             locals = LocalCapture.CAPTURE_FAILSOFT)
     private void modifyDropItem(ItemStack stack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir, double d, ItemEntity itemEntity) {
-        float f = 0.3F;
-        Random random = ThreadLocalRandom.current();
-        float g = MathHelper.sin(((PlayerEntity)(Object)this).pitch * 0.017453292F);
-        float j = MathHelper.cos(((PlayerEntity)(Object)this).pitch * 0.017453292F);
-        float k = MathHelper.sin(((PlayerEntity)(Object)this).yaw * 0.017453292F);
-        float l = MathHelper.cos(((PlayerEntity)(Object)this).yaw * 0.017453292F);
-        float m = random.nextFloat() * 6.2831855F;
-        float n = 0.02F * random.nextFloat();
-        Vec3d v = new Vec3d((double) (-k * j * 0.3F) + Math.cos((double) m) * (double) n, (double) (-g * 0.3F + 0.1F + (random.nextFloat() - random.nextFloat()) * 0.1F), (double) (l * j * 0.3F) + Math.sin((double) m) * (double) n);
-        double q = ((PlayerEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue() - ((ItemWeight) (Object) stack).getWeight();
-        double scale = (q / ((PlayerEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue() * 2);
-        itemEntity.setVelocity(v.multiply(scale));
+        if (IguanaBlanket.playerDropPower.getOrDefault(((ServerPlayerEntity)(PlayerEntity)(Object)this).getUuid(), 0f) > 0f) {
+            float f = 0.3F;
+            Random random = ThreadLocalRandom.current();
+            float g = MathHelper.sin(((PlayerEntity)(Object)this).pitch * 0.017453292F);
+            float j = MathHelper.cos(((PlayerEntity)(Object)this).pitch * 0.017453292F);
+            float k = MathHelper.sin(((PlayerEntity)(Object)this).yaw * 0.017453292F);
+            float l = MathHelper.cos(((PlayerEntity)(Object)this).yaw * 0.017453292F);
+            float m = 0;//(float) (random.nextGaussian() * .2831855F);
+            float n = 0;//(float) (0.02F * random.nextGaussian());
+            float power = IguanaBlanket.playerDropPower.get(((ServerPlayerEntity)(PlayerEntity)(Object)this).getUuid());
+        /*Vec3d vel = new Vec3d(((PlayerEntity) (Object) this).getX() - ((PlayerEntity) (Object) this).prevX,
+                ((PlayerEntity) (Object) this).getY() - ((PlayerEntity) (Object) this).prevY,
+                ((PlayerEntity) (Object) this).getZ() - ((PlayerEntity) (Object) this).prevZ);*/
+            //Vec3d v = new Vec3d((double) (-k * j * 0.3F) + Math.cos((double) m) * (double) n, (double) (-g * 0.3F + 0.1F + (random.nextGaussian() - random.nextGaussian()) * 0.1F), (double) (l * j * 0.3F) + Math.sin((double) m) * (double) n);
+            Vec3d v = new Vec3d((double) (-k * j * 0.3F) + Math.cos((double) m) * (double) n, (double) (-g * 0.3F + 0.1F), (double) (l * j * 0.3F) + Math.sin((double) m) * (double) n);
+            v = v.multiply(0.6); //correct for large numbers
+            double maxWeight = ((PlayerEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
+            v = v.add(v.multiply((maxWeight - Math.min(maxWeight, 10*((ItemWeight) (Object) stack).getWeight())) / maxWeight));
+            itemEntity.setVelocity(v.multiply(power));
+            IguanaBlanket.playerDropPower.put(((ServerPlayerEntity)(PlayerEntity)(Object)this).getUuid(), 0f);
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;", cancellable = true)
+    private void cancelItemDrop(ItemStack stack, boolean bl, boolean bl2, CallbackInfoReturnable<ItemEntity> cir) {
+        if ((IguanaBlanket.playerDropPower.getOrDefault(((ServerPlayerEntity)(PlayerEntity)(Object)this).getUuid(), 0f) < 1f)) {
+            cir.cancel();
+        }
     }
 }

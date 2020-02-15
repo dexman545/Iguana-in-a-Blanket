@@ -12,12 +12,15 @@ import dex.iguanablanket.mixin.EntityMixin;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ElytraItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -30,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.PrimitiveIterator;
+import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -37,7 +41,11 @@ public class IguanaBlanket implements ModInitializer {
 	public static IguanaConfig cfg;
 	public static final Identifier IGUANA_CONFIG_PACKET_ID_WEIGHTS = new Identifier("iguana-blanket", "config_weights");
 	public static final Identifier IGUANA_CONFIG_PACKET_ID_STACKS = new Identifier("iguana-blanket", "config_stacks");
+	public static final Identifier IGUANA_ITEM_POWERED_THROW = new Identifier("iguana-blanket", "item_throw_power");
+
 	public static final Logger logger = LogManager.getLogger(IguanaBlanketClient.modid);
+
+	public static HashMap<UUID, Float> playerDropPower = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
@@ -130,6 +138,17 @@ public class IguanaBlanket implements ModInitializer {
 			//send the data
 			players.forEach(serverPlayerEntity -> {
 				SyncHelper.syncData(serverPlayerEntity, syncData);
+			});
+		});
+
+		ServerSidePacketRegistry.INSTANCE.register(IGUANA_ITEM_POWERED_THROW, (context, data) -> {
+			float power = data.readFloat();
+			context.getTaskQueue().execute(() -> {
+				if (context.getPlayer().isAlive()&& power > 0 && !context.getPlayer().getMainHandStack().equals(ItemStack.EMPTY)) {
+					playerDropPower.put(context.getPlayer().getUuid(), Math.min(power, cfg.maxThrowFactor()));
+					context.getPlayer().dropSelectedItem(false);
+				}
+				logger.info(power);
 			});
 		});
 

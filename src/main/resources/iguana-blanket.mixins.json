@@ -24,7 +24,8 @@
   ],
   "client": [
     "GameRendererMixin",
-    "ItemStackMixinClient"
+    "ItemStackMixinClient",
+    "ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

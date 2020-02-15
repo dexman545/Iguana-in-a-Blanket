@@ -5,14 +5,26 @@ import com.google.gson.reflect.TypeToken;
 import dex.iguanablanket.config.LuaConfigCompilation;
 import dex.iguanablanket.impl.IguanaEntityAttributes;
 import dex.iguanablanket.mixin.EntityMixin;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.packet.PlayerActionC2SPacket;
+import net.minecraft.server.network.packet.PlayerInputC2SPacket;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import spinnery.util.InGameHudScreen;
 import spinnery.widget.*;
 
@@ -22,6 +34,7 @@ import java.util.Objects;
 
 public class IguanaBlanketClient implements ClientModInitializer {
 	static String modid = "iguana-blanket";
+	public static float power = 0;
 
 	// WInterface
 	WInterface mainInterface = new WInterface(WPosition.of(WType.FREE, 8, 8, 0));
@@ -80,6 +93,23 @@ public class IguanaBlanketClient implements ClientModInitializer {
 
 			encumbrance.setCurrentImage(value);
 			encumbrance.setHidden(!IguanaBlanket.cfg.displayEncumbranceIcon());
+
+
+			if (MinecraftClient.getInstance() != null) {
+				if ((MinecraftClient.getInstance().options.keyDrop.isPressed() || MinecraftClient.getInstance().options.keyDrop.wasPressed())) {
+					power++;
+				} else if (power != 0) {
+					power = power / 4;
+					power = Math.min(power, IguanaBlanket.cfg.maxThrowFactor());
+					power = Math.max(power, 1);
+					PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+					data.writeFloat(power);
+					//player.networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.DROP_ITEM, BlockPos.ORIGIN, Direction.DOWN));
+					ClientSidePacketRegistry.INSTANCE.sendToServer(IguanaBlanket.IGUANA_ITEM_POWERED_THROW, data);
+					//IguanaBlanket.playerDropPower.put(player.getUuid(), power);
+					power = 0f;
+				}
+			}
 
 
 		});
