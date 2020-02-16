@@ -64,7 +64,7 @@ public abstract class ItemEntityMixin {
             Entity e = h.getEntity();
             if (e instanceof LivingEntity) {
                 ItemStack s = ((ItemEntity)(Object)this).getStack();
-                double amount = ((ItemWeight) (Object) s).getWeight() / v.length();
+                double amount = ((ItemWeight) (Object) s).getWeight() * v.length();
                 ((LivingEntity)e).damage(DamageSource.FALLING_BLOCK, (float) amount);
             }
         }

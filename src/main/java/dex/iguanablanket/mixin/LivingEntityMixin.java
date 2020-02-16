@@ -101,16 +101,6 @@ public abstract class LivingEntityMixin extends Entity {
 
     }
 
-    /*@Inject(method = "travel(Lnet/minecraft/util/math/Vec3d;)V",
-            slice = @Slice(from = @At(value = "INVOKE"),
-                    to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/entity/effect/StatusEffect;)Z")),
-            at = @At("INVOKE"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void modifyFall(Vec3d movementInput, CallbackInfo ci, double d, boolean bl) {
-        System.out.println(d);
-        d *= 10;
-
-    }*/
-
     @ModifyVariable(method = "travel(Lnet/minecraft/util/math/Vec3d;)V", index = 2, slice = @Slice(from = @At(value = "INVOKE"),
             to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/entity/effect/StatusEffect;)Z")),
             at = @At("INVOKE"))
