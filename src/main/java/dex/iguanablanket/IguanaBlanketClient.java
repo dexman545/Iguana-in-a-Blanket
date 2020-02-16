@@ -71,7 +71,7 @@ public class IguanaBlanketClient implements ClientModInitializer {
 			x.add(encumbrance);
 
 			toss.setSize(Size.of(50, 10));
-			toss.setPosition(Position.of(0,30,0));
+			toss.setPosition(Position.of(0,15,0));
 			toss.setLimit(new MutableFloat(IguanaBlanket.cfg.maxThrowFactor()));
 			x.add(toss);
 

@@ -24,7 +24,7 @@ repositories {
 	}
 	maven {
 		name = "Spinnery"
-		url  "https://dl.bintray.com/vini2003/Spinnery"
+		url  "https://dl.bintray.com/spinnery/Spinnery"
 	}
 }
 
