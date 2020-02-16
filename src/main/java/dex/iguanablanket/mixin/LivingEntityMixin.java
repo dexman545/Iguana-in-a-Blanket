@@ -16,12 +16,10 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
@@ -101,6 +99,29 @@ public abstract class LivingEntityMixin extends Entity {
             ((LivingEntity) (Object) this).setVelocity(v.add(0, -scale*v.y*1.3, 0));
         }
 
+    }
+
+    /*@Inject(method = "travel(Lnet/minecraft/util/math/Vec3d;)V",
+            slice = @Slice(from = @At(value = "INVOKE"),
+                    to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/entity/effect/StatusEffect;)Z")),
+            at = @At("INVOKE"), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void modifyFall(Vec3d movementInput, CallbackInfo ci, double d, boolean bl) {
+        System.out.println(d);
+        d *= 10;
+
+    }*/
+
+    @ModifyVariable(method = "travel(Lnet/minecraft/util/math/Vec3d;)V", index = 2, slice = @Slice(from = @At(value = "INVOKE"),
+            to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/entity/effect/StatusEffect;)Z")),
+            at = @At("INVOKE"))
+    private double modifyFall(double d) {
+        double weight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.WEIGHT).getValue();
+        double maxWeight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
+        double scale = ((weight + maxWeight) / maxWeight);
+        if (((LivingEntity) (Object) this).isFallFlying()) {
+            return d * scale;
+        }
+        return d;
     }
 
 }
