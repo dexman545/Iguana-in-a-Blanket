@@ -22,6 +22,10 @@ repositories {
 		name = "Cotton"
 		url = "http://server.bbkr.space:8081/artifactory/libs-release/"
 	}
+	maven {
+		name = "Spinnery"
+		url  "https://dl.bintray.com/vini2003/Spinnery"
+	}
 }
 
 dependencies {
@@ -33,8 +37,9 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modCompile "com.github.Gorlem:Spinnery:breaking-SNAPSHOT"
-	include "com.github.Gorlem:Spinnery:breaking-SNAPSHOT"
+	// Spinnery
+	modCompile("com.github.vini2003:spinnery:${project.spinnery_version}")
+	include("com.github.vini2003:spinnery:${project.spinnery_version}")
 
 	//OWNER library
 	modCompile "org.aeonbits.owner:owner:1.0.10"
