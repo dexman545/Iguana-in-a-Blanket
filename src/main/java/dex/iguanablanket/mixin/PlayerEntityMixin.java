@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -75,5 +76,13 @@ public class PlayerEntityMixin {
         if (((PlayerEntity) (Object) this).world.isClient && (IguanaBlanket.playerDropPower.getOrDefault(((PlayerEntity)(Object)this).getUuid(), 0f) < 1f)) {
             cir.cancel();
         }
+    }
+
+    @Inject(method = "addExhaustion(F)V", at = @At("TAIL"))
+    private void modifyExhaustion(float exhaustion, CallbackInfo ci) {
+        double currentWeight = ((PlayerEntity)(Object)this).getAttributeInstance(IguanaEntityAttributes.WEIGHT).getValue();
+        double maxWeight = ((PlayerEntity)(Object)this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
+        float scale = (float) ((maxWeight + Math.min(maxWeight, currentWeight)) / maxWeight) - 1;
+        ((PlayerEntity)(Object)this).getHungerManager().addExhaustion(scale * exhaustion);
     }
 }
