@@ -51,10 +51,6 @@ public class IguanaBlanketClient implements ClientModInitializer {
 
 	WHorizontalBar toss = new WHorizontalBar();
 
-	//WDynamicImage encumbrance = new WDynamicImage(Position.of(0, 0, 0, mainInterface), Size.of(15, 15), mainInterface);
-
-	//WTextArea toss = new WDynamicText(WPosition.of(WType.ANCHORED, 0, 20, 0, mainInterface), Size.of(0, 0), mainInterface);
-
 
 	private void genTextures() {
 		for (int i = 0; i < 5; i++) {
@@ -118,7 +114,6 @@ public class IguanaBlanketClient implements ClientModInitializer {
 					toss.setHidden(false);
 					toss.setProgress(new MutableFloat(Math.max(1, Math.min(power / 4, IguanaBlanket.cfg.maxThrowFactor()))));
 
-					//toss.setLabel(new LiteralText(String.valueOf(Math.max(1, Math.min(power / 4, IguanaBlanket.cfg.maxThrowFactor())))).formatted(Formatting.WHITE));
 				} else if (power != 0) {
 					power = power / 4;
 					power = Math.min(power, IguanaBlanket.cfg.maxThrowFactor());
