@@ -7,30 +7,21 @@ import dex.iguanablanket.impl.IguanaEntityAttributes;
 import dex.iguanablanket.mixin.EntityMixin;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.packet.PlayerActionC2SPacket;
-import net.minecraft.server.network.packet.PlayerInputC2SPacket;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.mutable.MutableFloat;
 import spinnery.client.InGameHudScreen;
-import spinnery.common.BaseContainer;
-import spinnery.widget.*;
+import spinnery.widget.WDynamicImage;
+import spinnery.widget.WHorizontalBar;
+import spinnery.widget.WInterface;
 import spinnery.widget.api.Position;
 import spinnery.widget.api.Size;
 
@@ -41,9 +32,6 @@ import java.util.Objects;
 public class IguanaBlanketClient implements ClientModInitializer {
 	static String modid = "iguana-blanket";
 	public static float power = 0;
-
-	// WInterface
-	WInterface mainInterface = new WInterface();
 
 	Identifier[] textures = new Identifier[5];
 
