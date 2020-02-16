@@ -48,11 +48,10 @@ public abstract class ItemEntityMixin {
 
     private static EntityHitResult rayTraceEntity(Entity entity, float partialTicks) {
         Vec3d from = entity.getPos();
-        Vec3d look = entity.getRotationVec(partialTicks);
         Vec3d v = entity.getVelocity();
         Vec3d to = from.add(v);
 
-        return ProjectileUtil.getEntityCollision(entity.world, entity, from, to, (new Box(from, to)).expand(5), EntityPredicates.VALID_ENTITY);
+        return ProjectileUtil.getEntityCollision(entity.world, entity, from, to, (new Box(from, to)).stretch(3, 3, 3).expand(5), EntityPredicates.VALID_ENTITY);
     }
 
     @Inject(at = @At("TAIL"), method = "tick()V")
