@@ -111,7 +111,7 @@ public class IguanaBlanketClient implements ClientModInitializer {
 			if (MinecraftClient.getInstance() != null) {
 				if ((MinecraftClient.getInstance().options.keyDrop.isPressed() || MinecraftClient.getInstance().options.keyDrop.wasPressed()) && !player.getMainHandStack().equals(ItemStack.EMPTY)) {
 					power++;
-					toss.setHidden(false);
+					toss.setHidden(!IguanaBlanket.cfg.showThrowMeter());
 					toss.setProgress(new MutableFloat(Math.max(1, Math.min(power / 4, IguanaBlanket.cfg.maxThrowFactor()))));
 
 				} else if (power != 0) {

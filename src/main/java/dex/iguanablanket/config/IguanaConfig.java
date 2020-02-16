@@ -47,4 +47,7 @@ public interface IguanaConfig extends Config, Reloadable, Accessible {
     @DefaultValue("10")
     float maxThrowFactor();
 
+    @DefaultValue("true")
+    boolean showThrowMeter();
+
 }
