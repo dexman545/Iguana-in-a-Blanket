@@ -116,7 +116,6 @@ public class IguanaBlanketClient implements ClientModInitializer {
 
 
 
-
 		});
 
 		//Listen for config packet from server
