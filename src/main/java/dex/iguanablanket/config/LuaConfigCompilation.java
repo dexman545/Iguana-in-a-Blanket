@@ -63,6 +63,8 @@ public class LuaConfigCompilation {
                 stacksizes.forEach((s, integer) -> {
                     if (integer <= 0) {
                         stacksizes.put(s, 1);
+                    } else if (integer > 64) {
+                        stacksizes.put(s, 64);
                     }
                 });
 
