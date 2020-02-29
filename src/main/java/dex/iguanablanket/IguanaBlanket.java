@@ -69,7 +69,7 @@ public class IguanaBlanket implements ModInitializer {
 			logger.catching(e);
 		}
 
-		ServerTickCallback.EVENT.register(t -> {
+		/*ServerTickCallback.EVENT.register(t -> {
 
 			for (ServerPlayerEntity player : t.getPlayerManager().getPlayerList()) {
 				//Item weight calc
@@ -117,7 +117,7 @@ public class IguanaBlanket implements ModInitializer {
 
 			return ActionResult.PASS;
 
-		}));
+		}));*/
 
 		GenerateData gen = new GenerateData();
 
@@ -125,11 +125,11 @@ public class IguanaBlanket implements ModInitializer {
 			LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + cfg.luaConfig(), gen.genDefaultsTables());
 		});
 
-		PlayerJoinCallback.EVENT.register(playerEntity -> {
+		/*PlayerJoinCallback.EVENT.register(playerEntity -> {
 			SyncHelper.syncData(playerEntity, LuaConfigCompilation.syncedData);
 
 			return ActionResult.PASS;
-		});
+		});*/
 
 		ServerReloadCallback.EVENT.register(t -> {
 			HashMap<String, HashMap> syncData = LuaConfigCompilation.threadedmain(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + cfg.luaConfig(), gen.genDefaultsTables());
@@ -141,7 +141,7 @@ public class IguanaBlanket implements ModInitializer {
 			});
 		});
 
-		ServerSidePacketRegistry.INSTANCE.register(IGUANA_ITEM_POWERED_THROW, (context, data) -> {
+		/*ServerSidePacketRegistry.INSTANCE.register(IGUANA_ITEM_POWERED_THROW, (context, data) -> {
 			float power = data.readFloat();
 			context.getTaskQueue().execute(() -> {
 				if (context.getPlayer().isAlive()&& power > 0 && !context.getPlayer().getMainHandStack().equals(ItemStack.EMPTY)) {
@@ -149,7 +149,7 @@ public class IguanaBlanket implements ModInitializer {
 					context.getPlayer().dropSelectedItem(false);
 				}
 			});
-		});
+		});*/
 
 	}
 

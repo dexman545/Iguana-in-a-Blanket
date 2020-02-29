@@ -19,8 +19,7 @@
   "entrypoints": {
     "main": [
       "dex.iguanablanket.IguanaBlanket"
-    ],
-    "client": ["dex.iguanablanket.IguanaBlanketClient"]
+    ]
   },
   "mixins": [
     "iguana-blanket.mixins.json"

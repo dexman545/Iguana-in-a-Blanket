@@ -3,29 +3,13 @@
   "package": "dex.iguanablanket.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BlockStateMixin",
-    "ItemStackMixin",
-    "LivingEntityMixin",
-    "BlockMixin",
-    "EntityMixin",
-    "MinecraftServerMixin",
-    "PlayerManagerMixin",
-    "PlayerEntityMixin",
-    "ItemEntityMixin"
+    "ItemStackMixin"
   ],
   "server": [
-    "BlockStateMixin",
-    "ItemStackMixin",
-    "LivingEntityMixin",
-    "BlockMixin",
-    "EntityMixin",
-    "MinecraftServerMixin",
-    "PlayerManagerMixin"
+    "ItemStackMixin"
   ],
   "client": [
-    "GameRendererMixin",
-    "ItemStackMixinClient",
-    "ClientPlayerEntityMixin"
+
   ],
   "injectors": {
     "defaultRequire": 1
