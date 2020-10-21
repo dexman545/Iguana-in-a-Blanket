@@ -50,6 +50,14 @@ public class IguanaBlanket implements ModInitializer {
 	public static HashMap<UUID, Float> playerDropPower = new HashMap<>();
 
 	static {
+		//Config Moved Here to Avoid Null Pointers
+
+		try {
+			(new DefaultConfigWriter()).writeDefaultConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + "default.lua");
+		} catch (IOException e) {
+			logger.catching(e);
+		}
+
 		//configuration
 		String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana.cfg";
 		ConfigFactory.setProperty("configDir", config);
@@ -66,13 +74,6 @@ public class IguanaBlanket implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
-		try {
-			(new DefaultConfigWriter()).writeDefaultConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + "default.lua");
-		} catch (IOException e) {
-			logger.catching(e);
-		}
-
 		ServerTickCallback.EVENT.register(t -> {
 
 			for (ServerPlayerEntity player : t.getPlayerManager().getPlayerList()) {
