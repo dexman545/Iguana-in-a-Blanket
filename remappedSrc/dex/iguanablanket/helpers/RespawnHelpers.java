@@ -43,10 +43,10 @@ public abstract class RespawnHelpers {
         if (voxelShape.getMax(Direction.Axis.Y) > 0.4375D) {
             return Optional.empty();
         } else {
-            BlockPos.Mutable mutable = new BlockPos.Mutable().set(pos);
+            BlockPos.Mutable mutable = new BlockPos.Mutable(pos);
 
             while(mutable.getY() >= 0 && pos.getY() - mutable.getY() <= 2 && worldView.getBlockState(mutable).getCollisionShape(worldView, mutable).isEmpty()) {
-                mutable.offset(Direction.DOWN);
+                mutable.move(Direction.DOWN);
             }
 
             VoxelShape voxelShape2 = worldView.getBlockState(mutable).getCollisionShape(worldView, mutable);

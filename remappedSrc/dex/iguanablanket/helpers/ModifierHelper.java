@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ModifierHelper {
 
     public static void changeMovementSpeed(LivingEntity entity, Data.AttributeModifier modifier, double value) {
-        changeEntityAttribute(entity, modifier, value, EntityAttributes.GENERIC_MOVEMENT_SPEED);
+        changeEntityAttribute(entity, modifier, value, EntityAttributes.MOVEMENT_SPEED);
 
     }
 
@@ -25,13 +25,13 @@ public class ModifierHelper {
 
     private static void changeEntityAttribute(LivingEntity entity, Data.AttributeModifier modifier, double value, EntityAttribute attribute) {
         //Reset modifier
-        if (entity.getAttributes().getCustomInstance(attribute).getModifier(modifier.getID()) != null) {
-            entity.getAttributes().getCustomInstance(attribute).removeModifier(modifier.getID());
+        if (entity.getAttributes().get(attribute).getModifier(modifier.getID()) != null) {
+            entity.getAttributes().get(attribute).removeModifier(modifier.getID());
         }
 
         //Apply new modifier
         EntityAttributeModifier newAttributeModifier = new EntityAttributeModifier(modifier.getID(), modifier.toString(), value, EntityAttributeModifier.Operation.ADDITION);
-        entity.getAttributes().getCustomInstance(attribute).addPersistentModifier(newAttributeModifier);
+        entity.getAttributes().get(attribute).addModifier(newAttributeModifier);
 
     }
 

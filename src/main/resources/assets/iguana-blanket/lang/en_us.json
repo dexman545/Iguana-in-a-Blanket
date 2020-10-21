@@ -1,3 +1,6 @@
 {
-  "iguana.tooltip.weight": "Weight: %f"
+  "iguana.tooltip.weight": "Weight: %f",
+  "generic.max-carry-weight": "MaxWeight",
+  "generic.weight": "Weight",
+  "generic.susceptibility": "Susceptibility"
 }

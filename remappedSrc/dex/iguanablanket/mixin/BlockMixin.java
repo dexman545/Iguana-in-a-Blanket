@@ -33,8 +33,7 @@ public abstract class BlockMixin {
             }
 
             float factor = doIgnore ? 0f : LuaConfigCompilation.blockslowdown.getOrDefault(Registry.BLOCK.getId(((Block) (Object) this)).toString(), 0f);
-            double defaultMovementSpeed = ((LivingEntity) entity).getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-                    .getBaseValue();
+            double defaultMovementSpeed = ((LivingEntity) entity).getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).getBaseValue();
             ModifierHelper.changeMovementSpeed((LivingEntity) entity, Data.AttributeModifier.TERRAIN_SLOWDOWN, -factor * defaultMovementSpeed);
         }
     }

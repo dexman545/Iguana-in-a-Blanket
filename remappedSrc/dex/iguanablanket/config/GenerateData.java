@@ -55,11 +55,11 @@ public class GenerateData {
         writeToFile("BlockTags",o);
         FileWriter finalO2 = o;
         FileWriter finalO5 = o;
-        BlockTags.getRequiredTags().forEach(identifier -> {
+        BlockTags.getTagGroup().getKeys().forEach(identifier -> {
             writeToFile("\t" + identifier.toString(), finalO5);
-            LuaTable x = LuaValue.tableOf();
+            LuaTable x = LuaTable.tableOf();
             AtomicInteger i = new AtomicInteger();
-            TagRegistry.block(identifier.getId()).values().forEach(block -> {
+            TagRegistry.block(identifier).values().forEach(block -> {
                 x.set(i.get(), LuaValue.valueOf(Registry.BLOCK.getId(block).toString()));
                 i.addAndGet(1);
                 writeToFile("\t\t" + Registry.BLOCK.getId(block).toString(), finalO2);
@@ -79,11 +79,11 @@ public class GenerateData {
         LuaTable ItemTagTable = LuaValue.tableOf();
         writeToFile("ItemTags",o);
         FileWriter finalO1 = o;
-        ItemTags.getRequiredTags().forEach(identifier -> {
-            LuaTable x = LuaValue.tableOf();
+        ItemTags.getTagGroup().getKeys().forEach(identifier -> {
+            LuaTable x = LuaTable.tableOf();
             writeToFile("\t" + identifier.toString(), finalO1);
             AtomicInteger i = new AtomicInteger();
-            TagRegistry.item(identifier.getId()).values().forEach(item -> {
+            TagRegistry.item(identifier).values().forEach(item -> {
                 writeToFile("\t\t" + Registry.ITEM.getId(item).toString(), finalO1);
                 x.set(i.get(), LuaValue.valueOf(Registry.ITEM.getId(item).toString()));
                 i.addAndGet(1);

@@ -24,8 +24,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,7 +47,15 @@ public class IguanaBlanket implements ModInitializer {
 
 	public static HashMap<UUID, Float> playerDropPower = new HashMap<>();
 
-	static {
+	@Override
+	public void onInitialize() {
+
+		try {
+			(new DefaultConfigWriter()).writeDefaultConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + "default.lua");
+		} catch (IOException e) {
+			logger.catching(e);
+		}
+
 		//configuration
 		String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana.cfg";
 		ConfigFactory.setProperty("configDir", config);
@@ -59,16 +65,6 @@ public class IguanaBlanket implements ModInitializer {
 		try {
 			cfg.store(new FileOutputStream(config), "Iguana in a Blanket Configuration File" +
 					"\nNote: Default options only effect new entities. Options will reload after ~5 seconds from save.");
-		} catch (IOException e) {
-			logger.catching(e);
-		}
-	}
-
-	@Override
-	public void onInitialize() {
-
-		try {
-			(new DefaultConfigWriter()).writeDefaultConfig(FabricLoader.getInstance().getConfigDirectory().toString() + "/iguana-blanket/" + "default.lua");
 		} catch (IOException e) {
 			logger.catching(e);
 		}
@@ -89,20 +85,17 @@ public class IguanaBlanket implements ModInitializer {
 
 				player.getAttributeInstance(IguanaEntityAttributes.WEIGHT).setBaseValue(currentWeight);
 
-				double defaultMovementSpeed = player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-						.getBaseValue();
+				double defaultMovementSpeed = player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).getBaseValue();
 				double maxWeight = player.getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
-				double deltaMovementSpeed = defaultMovementSpeed
-						- (defaultMovementSpeed * ((maxWeight - Math.min(maxWeight, currentWeight)) / maxWeight));
+				double deltaMovementSpeed = defaultMovementSpeed - (defaultMovementSpeed * ((maxWeight - Math.min(maxWeight, currentWeight)) / maxWeight));
 
-				ModifierHelper.changeMovementSpeed(player, Data.AttributeModifier.ENCUMBRANCE_SLOWDOWN,
-						-deltaMovementSpeed);
+				ModifierHelper.changeMovementSpeed(player, Data.AttributeModifier.ENCUMBRANCE_SLOWDOWN, -deltaMovementSpeed);
 
-				// player collapse and elytra break
+				//player collapse and elytra break
 				if (currentWeight >= maxWeight) {
 					player.setSwimming(!cfg.playerOverburdenedDoesPushups());
-					((EntityMixin) (Entity) player).callSetPose(EntityPose.SWIMMING);
-					if (player.isFallFlying() && !player.isOnGround()) {
+					((EntityMixin)(Entity)player).callSetPose(EntityPose.SWIMMING);
+					if (player.isFallFlying() && !player.onGround) {
 						player.getArmorItems().forEach(v -> {
 							if (v.getItem() instanceof ElytraItem) {
 								v.setDamage(v.getMaxDamage() - 1);
@@ -117,8 +110,7 @@ public class IguanaBlanket implements ModInitializer {
 		EntityHealthChangeCallback.EVENT.register(((entity, health) -> {
 			float maxHealth = entity.getMaxHealth();
 			double susceptibility = entity.getAttributeInstance(IguanaEntityAttributes.SUSCEPTIBILITY).getValue();
-			double defaultMovementSpeed = entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
-					.getBaseValue();
+			double defaultMovementSpeed = entity.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).getBaseValue();
 			double deltaMovementSpeed = susceptibility * (defaultMovementSpeed * ((maxHealth - Math.min(maxHealth, health)) / maxHealth));
 
 			ModifierHelper.changeMovementSpeed(entity, Data.AttributeModifier.HEALTH_SLOWDOWN, -deltaMovementSpeed);
@@ -159,9 +151,8 @@ public class IguanaBlanket implements ModInitializer {
 			});
 		});
 
-		//Register Attributes (New in 1.16?)
-		Registry.register(Registry.ATTRIBUTE, "generic.max-carry-weight", IguanaEntityAttributes.MAX_WEIGHT);
-		Registry.register(Registry.ATTRIBUTE, "generic.weight", IguanaEntityAttributes.WEIGHT);
-		Registry.register(Registry.ATTRIBUTE, "generic.susceptibility", IguanaEntityAttributes.SUSCEPTIBILITY);
 	}
+
+
+
 }

@@ -28,9 +28,9 @@ public class PlayerManagerMixin {
         }
     }
 
-    @Inject(at = @At("RETURN"), method = "respawnPlayer", cancellable = true)
-    public void respawnPlayer(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
-        BlockPos blockPos = player.getSpawnPointPosition();
+    @Inject(at = @At("RETURN"), method = "respawnPlayer(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/world/dimension/DimensionType;Z)Lnet/minecraft/server/network/ServerPlayerEntity;", cancellable = true)
+    private void respawn(ServerPlayerEntity player, DimensionType dimension, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
+        BlockPos blockPos = player.getSpawnPosition();
         if (blockPos != null) {
             if (IguanaBlanket.cfg.destroyBedRespawn() && player.world.getBlockState(blockPos).getBlock() instanceof BedBlock) {
                 player.world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
