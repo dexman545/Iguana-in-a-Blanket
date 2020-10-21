@@ -55,9 +55,9 @@ public class GenerateData {
         writeToFile("BlockTags",o);
         FileWriter finalO2 = o;
         FileWriter finalO5 = o;
-        BlockTags.getContainer().getKeys().forEach(identifier -> {
+        BlockTags.getTagGroup().getTagIds().forEach(identifier -> {
             writeToFile("\t" + identifier.toString(), finalO5);
-            LuaTable x = LuaTable.tableOf();
+            LuaTable x = LuaValue.tableOf();
             AtomicInteger i = new AtomicInteger();
             TagRegistry.block(identifier).values().forEach(block -> {
                 x.set(i.get(), LuaValue.valueOf(Registry.BLOCK.getId(block).toString()));
@@ -79,8 +79,8 @@ public class GenerateData {
         LuaTable ItemTagTable = LuaValue.tableOf();
         writeToFile("ItemTags",o);
         FileWriter finalO1 = o;
-        ItemTags.getContainer().getKeys().forEach(identifier -> {
-            LuaTable x = LuaTable.tableOf();
+        ItemTags.getTagGroup().getTagIds().forEach(identifier -> {
+            LuaTable x = LuaValue.tableOf();
             writeToFile("\t" + identifier.toString(), finalO1);
             AtomicInteger i = new AtomicInteger();
             TagRegistry.item(identifier).values().forEach(item -> {

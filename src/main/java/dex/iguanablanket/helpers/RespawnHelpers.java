@@ -40,26 +40,26 @@ public abstract class RespawnHelpers {
 
     protected static Optional<Vec3d> canWakeUpAt(EntityType<?> type, WorldView worldView, BlockPos pos) {
         VoxelShape voxelShape = worldView.getBlockState(pos).getCollisionShape(worldView, pos);
-        if (voxelShape.getMaximum(Direction.Axis.Y) > 0.4375D) {
+        if (voxelShape.getMax(Direction.Axis.Y) > 0.4375D) {
             return Optional.empty();
         } else {
-            BlockPos.Mutable mutable = new BlockPos.Mutable(pos);
+            BlockPos.Mutable mutable = new BlockPos.Mutable().set(pos);
 
             while(mutable.getY() >= 0 && pos.getY() - mutable.getY() <= 2 && worldView.getBlockState(mutable).getCollisionShape(worldView, mutable).isEmpty()) {
-                mutable.setOffset(Direction.DOWN);
+                mutable.offset(Direction.DOWN);
             }
 
             VoxelShape voxelShape2 = worldView.getBlockState(mutable).getCollisionShape(worldView, mutable);
             if (voxelShape2.isEmpty()) {
                 return Optional.empty();
             } else {
-                double d = (double)mutable.getY() + voxelShape2.getMaximum(Direction.Axis.Y) + 2.0E-7D;
+                double d = (double)mutable.getY() + voxelShape2.getMax(Direction.Axis.Y) + 2.0E-7D;
                 if ((double)pos.getY() - d > 2.0D) {
                     return Optional.empty();
                 } else {
                     float f = type.getWidth() / 2.0F;
                     Vec3d vec3d = new Vec3d((double)mutable.getX() + 0.5D, d, (double)mutable.getZ() + 0.5D);
-                    return worldView.doesNotCollide(new Box(vec3d.x - (double)f, vec3d.y, vec3d.z - (double)f, vec3d.x + (double)f, vec3d.y + (double)type.getHeight(), vec3d.z + (double)f)) ? Optional.of(vec3d) : Optional.empty();
+                    return worldView.isSpaceEmpty(new Box(vec3d.x - (double)f, vec3d.y, vec3d.z - (double)f, vec3d.x + (double)f, vec3d.y + (double)type.getHeight(), vec3d.z + (double)f)) ? Optional.of(vec3d) : Optional.empty();
                 }
             }
         }

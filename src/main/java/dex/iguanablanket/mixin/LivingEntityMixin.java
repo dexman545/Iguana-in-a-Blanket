@@ -6,6 +6,7 @@ import dex.iguanablanket.impl.IguanaEntityAttributes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -26,16 +27,20 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyConstant(method = "jump()V", constant = @Constant(floatValue = 0.2F))
     private float setHJumpModifier(float m) {
-        double speed = ((LivingEntity) (Object) this).getAttributes().get(EntityAttributes.MOVEMENT_SPEED).getValue();
-        double defaultMovementSpeed = ((LivingEntity) (Object) this).getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).getBaseValue();
+        double speed = ((LivingEntity) (Object) this).getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                .getValue();
+        double defaultMovementSpeed = ((LivingEntity) (Object) this)
+                .getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).getBaseValue();
 
-        return (float) (m * (speed/defaultMovementSpeed));
+        return (float) (m * (speed / defaultMovementSpeed));
     }
 
     @Inject(method = "getJumpVelocity()F", at = @At("HEAD"), cancellable = true)
     private void setJumpHeightModifier(CallbackInfoReturnable<Float> cir) {
-        double speed = ((LivingEntity) (Object) this).getAttributes().get(EntityAttributes.MOVEMENT_SPEED).getValue();
-        double defaultMovementSpeed = ((LivingEntity) (Object) this).getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).getBaseValue();
+        double speed = ((LivingEntity) (Object) this).getAttributes().getCustomInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+                .getValue();
+        double defaultMovementSpeed = ((LivingEntity) (Object) this)
+                .getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).getBaseValue();
 
         double weight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.WEIGHT).getValue();
         double maxWeight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
@@ -54,7 +59,7 @@ public abstract class LivingEntityMixin extends Entity {
             double maxWeight = ((LivingEntity) (Object) this).getAttributeInstance(IguanaEntityAttributes.MAX_WEIGHT).getValue();
             double scale = (weight + maxWeight) / maxWeight;
 
-            if (((LivingEntity) (Object) this).isFallFlying() && !((LivingEntity) (Object) this).onGround) {
+            if (((LivingEntity) (Object) this).isFallFlying() && !((LivingEntity) (Object) this).isOnGround()) {
                 if (weight > maxWeight) {
                     ((LivingEntity) (Object) this).getArmorItems().forEach(t -> {
                         if (t.getItem() instanceof ElytraItem) {
@@ -74,11 +79,16 @@ public abstract class LivingEntityMixin extends Entity {
         super(entityType_1, world_1);
     }
 
-    @Inject(method = "initAttributes()V", at = @At("TAIL"))
-    private void initAttributes(CallbackInfo ci) {
-        ((LivingEntity) (Object) this).getAttributes().register(IguanaEntityAttributes.MAX_WEIGHT);
-        ((LivingEntity) (Object) this).getAttributes().register(IguanaEntityAttributes.WEIGHT);
-        ((LivingEntity) (Object) this).getAttributes().register(IguanaEntityAttributes.SUSCEPTIBILITY);
+    // @Inject(method = "initAttributes()V", at = @At("TAIL"))
+    // private void initAttributes(CallbackInfo ci) {
+    //     ((LivingEntity) (Object) this).getAttributes().register(IguanaEntityAttributes.MAX_WEIGHT);
+    //     ((LivingEntity) (Object) this).getAttributes().register(IguanaEntityAttributes.WEIGHT);
+    //     ((LivingEntity) (Object) this).getAttributes().register(IguanaEntityAttributes.SUSCEPTIBILITY);
+    // }
+
+    @Inject(method = "createLivingAttributes", at = @At("RETURN"))
+    private static void appendAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
+        cir.getReturnValue().add(IguanaEntityAttributes.MAX_WEIGHT).add(IguanaEntityAttributes.WEIGHT).add(IguanaEntityAttributes.SUSCEPTIBILITY);
     }
 
     @Inject(at=@At("INVOKE"), method = "setHealth(F)V", cancellable = true)

@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.2.6-SNAPSHOT'
+	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -38,8 +38,8 @@ dependencies {
 	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Spinnery
-	modCompile("com.github.vini2003:spinnery:${project.spinnery_version}")
-	include("com.github.vini2003:spinnery:${project.spinnery_version}")
+	modCompile("com.github.badasintended:spinnery:${project.spinnery_version}")
+	include("com.github.badasintended:spinnery:${project.spinnery_version}")
 
 	//OWNER library
 	modCompile "org.aeonbits.owner:owner:1.0.10"

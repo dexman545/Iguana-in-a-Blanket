@@ -9,6 +9,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -29,8 +30,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin {
 
-    @Inject(at = @At("RETURN"), method = "findRespawnPosition(Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;Z)Ljava/util/Optional;", cancellable = true)
-    private static void respawnLoc(WorldView world, BlockPos spawnPos, boolean allowNonBed, CallbackInfoReturnable<Optional<Vec3d>> cir) {
+    @Inject(at = @At("RETURN"), method = "findRespawnPosition", cancellable = true)
+    private static void respawnLoc(ServerWorld world, BlockPos pos1, float f1, boolean bl, boolean bl2, CallbackInfoReturnable<Optional<Vec3d>> cir) {
         Optional<Vec3d> original = cir.getReturnValue();
         double range = IguanaBlanket.cfg.randomRespawnRange();
         original.ifPresent(vec3d -> {
@@ -39,7 +40,7 @@ public class PlayerEntityMixin {
             Optional<Vec3d> f = RespawnHelpers.findWakeUpPosition(EntityType.PLAYER, world, new BlockPos(v), 10);
             f.ifPresent(vec3d1 -> {
                 BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(vec3d1));
-                cir.setReturnValue(Optional.of(new Vec3d(pos)));
+                cir.setReturnValue(Optional.of(Vec3d.of(pos)));
             });
         });
     }
